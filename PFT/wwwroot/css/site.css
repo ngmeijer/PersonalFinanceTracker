@@ -26,6 +26,13 @@ a{
     color:white;
 }
 
+ul {
+    padding-left: 0;
+    text-align: left;
+    list-style-position: inside;
+    list-style-type: none;
+}
+
 header {
     background-color: #3a4a52;
 }

@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 using PFT.Models;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using TwelveDataSharp.Interfaces;
+using TwelveDataSharp;
+using TwelveDataSharp.Library.ResponseModels;
 
 namespace PFT.Controllers
 {
@@ -10,29 +13,41 @@ namespace PFT.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private HttpClient _httpClient;
+        private ITwelveDataClient _twelveDataClient;
+        private StreamReader _reader;
+
+        private InvestmentsModel _investmentsModel;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             _httpClient = new HttpClient();
+
+            string apiKey = ReadFromFile("apikey.txt");
+            _twelveDataClient = new TwelveDataClient(apiKey, _httpClient);
+
+            _investmentsModel = new();
+        }
+
+        private string ReadFromFile(string fileName)
+        {
+            try
+            {
+                using StreamReader reader = new(fileName);
+                string text = reader.ReadToEnd();
+                Console.WriteLine(text);
+                return text;
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+                return "";
+            }
         }
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                String URLString = "https://v6.exchangerate-api.com/v6/3c450a04af4133fe0ab4fa07/latest/USD";
-                using (_httpClient)
-                {
-                    var response = await _httpClient.GetStringAsync(URLString);
-                    API_Obj Test = JsonConvert.DeserializeObject<API_Obj>(response);
-                }
-            }
-            catch (Exception ex)
-            {
-                   Console.Write(ex.Message);
-            }
-
             return View();
         }
 
@@ -41,9 +56,20 @@ namespace PFT.Controllers
             return View();
         }
 
-        public IActionResult Investments()
+        public async Task<IActionResult> Investments()
         {
-            return View();
+            await RequestStockData("NVDA");
+            await RequestStockData("AAPL");
+            await RequestStockData("AMZN");
+
+            _investmentsModel.LatestUpdateTime = DateTime.Now;
+            return View(_investmentsModel);
+        }
+
+        public async Task RequestStockData(string symbol)
+        {
+            TwelveDataTimeSeries data = await _twelveDataClient.GetTimeSeriesAsync(symbol, "30min");
+            _investmentsModel.AddInvestment(data.Symbol, data);
         }
 
         public IActionResult Transactions()
@@ -71,13 +97,17 @@ namespace PFT.Controllers
 
 public class API_Obj
 {
-    public string time_last_update_utc { get; set; }
-    public string base_code { get; set; }
-    public ConversionRate conversion_rates { get; set; }
+    public string symbol { get; set; }
+    public string name { get; set; }
+    public string currency { get; set; }
+    public string exchange {  get; set; }
+    public string country { get; set; }
+    public string type { get; set; }
 }
 
-public class ConversionRate
+public class TimeSeries
 {
-    public double EUR { get; set; }
-    public double USD { get; set; }
+    public Dictionary<string, string> meta { get; set; }
+    public IList<Dictionary<string, string>> values { get; set; }
+    public string status { get; set; }
 }

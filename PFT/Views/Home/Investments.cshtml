@@ -2,6 +2,17 @@
     ViewData["Title"] = "PFT - Investments";
 }
 
+@model InvestmentsModel
+
 <div class="text-center">
 <h1 class="display-4">Investments</h1>
+<h3>Latest update time: @Model.LatestUpdateTime</h3>
+    @foreach (var stock in Model.GetInvestments())
+    {
+        <ul>
+            <li>@stock.Key : @stock.Value.Values[0].Close</li>
+        </ul>
+    }
 </div>
+
+<button>Refresh</button>
