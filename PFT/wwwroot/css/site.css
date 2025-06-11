@@ -18,6 +18,7 @@ html {
 }
 
 body {
+    background: #caf0f8ff;
     margin-bottom: 60px;
     background-color: #678a9c;
 }
@@ -26,17 +27,41 @@ a{
     color:white;
 }
 
-ul {
-    padding-left: 0;
-    text-align: left;
-    list-style-position: inside;
-    list-style-type: none;
+.container-fluid{
+    height:100%;
 }
 
-header {
-    background-color: #3a4a52;
+table {
+    width: 70%;
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    border: 1px solid black;
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
+}
+
+nav {
+    background-color: red;
 }
 
 footer {
     background-color: #364852;
+}
+
+#RefreshInvestmentsButton{
+    float:right;
+    width:6vw;
+    border:none;
+    font-size:1.5rem;
 }

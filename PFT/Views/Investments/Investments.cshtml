@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "PFT - Investments";
+}
+
+@model InvestmentsModel
+
+<div class="content">
+    <h1 class="display-4">Investments</h1>
+    <h3>Latest update time: @Model.LatestUpdateTime</h3>
+    <h3>Total portfolio value: €@Model.GetPortfolioValue()</h3>
+    <div>
+                    <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Symbol</th>
+                                    <th>Current total value</th>
+                                    <th>Percentual change</th>
+                                    <th>Absolute change</th>
+                                    <th>Current price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        @foreach (var investment in Model.GetInvestments())
+                                        {
+                                            var data = investment.Value.stockData;
+                                            var changeClass = data.Change < 0 ? "negative" : "positive";
+
+                                            <tr>
+                                                <td>@data.Name</td>
+                                                <td>@data.Symbol</td>
+                                                <td>@investment.Value.CurrentValue @data.Currency</td>
+                                                <td class="@changeClass">@Math.Round(data.PercentChange, 3)%</td>
+                                                <td class="@changeClass">@Math.Round(data.Change, 3)</td>
+                                                <td>@data.Close @data.Currency</td>
+                                            </tr>
+                                        }
+                            </tbody>
+                    </table>
+
+</div>
+</div>
+
+<button id="RefreshInvestmentsButton">Refresh</button>
