@@ -35,9 +35,14 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapControllers();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(
+//    name: "investments",
+//    pattern: "{controller=Investments}/{action=RefreshData}");
 app.MapRazorPages();
 
 app.Run();

@@ -6,15 +6,15 @@
         {
             try
             {
+                string filePath = Path.Combine(AppContext.BaseDirectory, fileName);
                 using StreamReader reader = new(fileName);
                 string text = reader.ReadToEnd();
-                Console.WriteLine(text);
                 return text;
             }
             catch (IOException e)
             {
                 Console.WriteLine(e.Message);
-                return "";
+                return string.Empty;
             }
         }
     }

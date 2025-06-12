@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Gowun Dodum", sans-serif;
+    src: url("/fonts/GowunDodum-Regular.ttf") format('truetype');
+}
+
 html {
   font-size: 14px;
 }
@@ -21,6 +26,7 @@ body {
     background: #caf0f8ff;
     margin-bottom: 60px;
     background-color: #678a9c;
+    font-family:'Gowun Dodum';
 }
 
 a{

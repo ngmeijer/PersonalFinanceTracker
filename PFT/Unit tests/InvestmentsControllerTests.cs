@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PFT.Controllers;
+using PFT.Utilities;
 using TwelveDataSharp.Library.ResponseModels;
 
 namespace PFT.Unit_tests
@@ -14,6 +15,14 @@ namespace PFT.Unit_tests
             InvestmentsController controller = new();
             var result = controller.Index() as ViewResult;
             Assert.AreEqual("Investments", result.ViewName);
+        }
+
+        [TestMethod]
+        public void Test_CanReadExternalFile()
+        {
+            string testKey = Utilities.Utilities.ReadFromFile("keyTest.txt");
+            Assert.IsNotEmpty(testKey);
+            Assert.AreEqual("testing the reading functionality", testKey);
         }
 
         [TestMethod]
