@@ -21,9 +21,12 @@
 
 <div class="content">
     <h1 class="display-4">Investments</h1>
+    <button id="RefreshInvestmentsButton">Refresh</button>
+
     <div id="investments-container">
         @await Html.PartialAsync("_InvestmentTablePartial", Model)
-        </div>
+    </div>
 </div>
 
-<button id="RefreshInvestmentsButton">Refresh</button>
+<button id="RemoveInvestmentsButton">Remove selected investment</button>
+<button id="AddInvestmentsButton">Add investment</button>

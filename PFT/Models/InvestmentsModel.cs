@@ -14,7 +14,7 @@ namespace PFT.Models
                 return;
             }
 
-            data.CurrentValue = (float)(data.AmountHeld * data.stockData.Close);
+            data.CurrentValue = (float)(data.AmountHeld * data.StockData.Close);
 
             if (_investments.ContainsKey(symbol))
             {
@@ -41,15 +41,25 @@ namespace PFT.Models
 
     public class InvestmentData
     {
-        public TwelveDataQuote stockData { get; set; }
+        public TwelveDataQuote StockData { get; set; }
+
+        public InvestmentType Type;
+
         public float AmountHeld { get; set; }
         public float CurrentValue { get; set; }
 
 
         public void CalculateValue()
         {
-            CurrentValue = (float)(AmountHeld * stockData.Close);
+            CurrentValue = (float)(AmountHeld * StockData.Close);
         }
+    }
+
+    public enum InvestmentType
+    {
+        Stock,
+        ETF,
+        Crypto
     }
 }
 

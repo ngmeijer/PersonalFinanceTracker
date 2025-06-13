@@ -30,8 +30,11 @@ namespace PFT.Controllers
 
         public async Task<IActionResult> Investments()
         {
-            await AddInvestment("NVDA");
-            await AddInvestment("AAPL");
+            await AddInvestment("NVDA", 3, InvestmentType.Stock);
+            await AddInvestment("AAPL", 7, InvestmentType.Stock);
+
+            await AddInvestment("SPY", 15, InvestmentType.ETF);
+
 
             _investmentsModel.LatestUpdateTime = DateTime.Now;
             return View(_investmentsModel);
@@ -51,13 +54,14 @@ namespace PFT.Controllers
             }
         }
 
-        public async Task AddInvestment(string symbol)
+        public async Task AddInvestment(string symbol, float amount, InvestmentType type)
         {
             TwelveDataQuote data = await RequestStockData(symbol);
             InvestmentData investmentData = new InvestmentData()
             {
-                AmountHeld = 5,
-                stockData = data
+                AmountHeld = amount,
+                StockData = data,
+                Type = type
             };
             investmentData.CalculateValue();
             _investmentsModel.AddInvestment(data.Symbol, investmentData);
@@ -72,25 +76,20 @@ namespace PFT.Controllers
             //TODO Connect to database to retrieve the investments held. AddInvestments calls are placeholders
             if (_investmentsModel.GetInvestments().Count == 0)
             {
-                await AddInvestment("NVDA");
-                await AddInvestment("AAPL");
+                await AddInvestment("NVDA", 3, InvestmentType.Stock);
+                await AddInvestment("AAPL", 7, InvestmentType.Stock);
+                await AddInvestment("SPY", 15, InvestmentType.ETF);
             }
 
             Dictionary<string, InvestmentData> investmentsCollection = _investmentsModel.GetInvestments();
             foreach(KeyValuePair<string, InvestmentData> entry in investmentsCollection)
             {
-                entry.Value.stockData = await RequestStockData(entry.Key);
+                entry.Value.StockData = await RequestStockData(entry.Key);
                 entry.Value.CalculateValue();
             }
             _investmentsModel.LatestUpdateTime = DateTime.Now; 
 
             return PartialView("_InvestmentTablePartial", _investmentsModel);
-        }
-
-        public PartialViewResult GetInvestmentTable()
-        {
-            var data = _investmentsModel.GetInvestments();
-            return PartialView("_InvestmentTablePartial", data);
         }
     }
 } 

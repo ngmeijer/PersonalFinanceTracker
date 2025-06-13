@@ -1,6 +1,6 @@
 @font-face {
     font-family: "Gowun Dodum", sans-serif;
-    src: url("/fonts/GowunDodum-Regular.ttf") format('truetype');
+    src: url("../fonts/GowunDodum-Regular.ttf") format('truetype');
 }
 
 html {
@@ -23,10 +23,9 @@ html {
 }
 
 body {
-    background: #caf0f8ff;
     margin-bottom: 60px;
-    background-color: #678a9c;
     font-family:'Gowun Dodum';
+    background:#353535;
 }
 
 a{
@@ -37,37 +36,22 @@ a{
     height:100%;
 }
 
-table {
-    width: 70%;
-    border: 1px solid black;
+footer, header {
+    background-color: #3C6E71;
 }
 
-th, td {
-    padding: 8px 12px;
-    border-bottom: 1px solid #ccc;
-    text-align: left;
-    border: 1px solid black;
+footer > div{
+    color:#FFFFFF;
 }
 
-.positive {
-    color: green;
-}
-
-.negative {
-    color: red;
-}
-
-nav {
-    background-color: red;
-}
-
-footer {
-    background-color: #364852;
+button{
+    padding:1vh 1vw;
+    border:none;
+    font-size:1.2rem;
+    background:#284B63;
+    color:#ffffff;
 }
 
 #RefreshInvestmentsButton{
     float:right;
-    width:6vw;
-    border:none;
-    font-size:1.5rem;
 }
