@@ -13,7 +13,7 @@
     padding-right: 2vw;
 }
 
-.InvestmentCategory{
+.investment-category{
     background:#3c6e71;
     padding:1vh 1vw;
     margin:3vh 1vw;
@@ -54,6 +54,22 @@ button{
     color:#ffffff;
 }
 
-#RefreshInvestmentsButton{
+#refresh-investments-button{
     float:right;
+}
+
+#add-investment-modal{
+    display:none;
+    position:absolute;
+    left:25%;
+    top:30vh;
+    width:30%;
+    height:25vh;
+    background:#ade8f4;
+    border-radius: 20px;
+    text-align: center;
+}
+
+#confirm-investment-button{
+    margin:20px;
 }

@@ -6,7 +6,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @section Scripts {
     <script>
-        $("#RefreshInvestmentsButton").click(function () {
+        $("#refresh-investments-button").click(function () {
             $.ajax({
                 url: '@Url.Action("RefreshData", "Investments")',
                 type: 'POST',
@@ -15,18 +15,38 @@
                 }
             });
         });
+        
+        const investmentModal = document.getElementById("add-investment-modal");
+        const addInvestmentButton = document.getElementById("add-investment-button");
+        const confirmInvestmentButton = document.getElementById("confirm-investment-button");
+        addInvestmentButton.onclick = function () {
+            investmentModal.style.display = "block";    
+        }
+        
+        confirmInvestmentButton.onclick = function () {
+            investmentModal.style.display = "none";    
+        }
 
     </script>
 }
 
 <div class="content">
     <h1 class="display-4">Investments</h1>
-    <button id="RefreshInvestmentsButton">Refresh</button>
+    <button id="refresh-investments-button">Refresh</button>
 
     <div id="investments-container">
         @await Html.PartialAsync("_InvestmentTablePartial", Model)
     </div>
+    
+    <div id="add-investment-modal">
+        <h2>Add investment</h2>
+        <label for="fname">Symbol:</label><br>
+        <input type="text" id="fsymbol" name="fsymbol" value="NVDA"><br>
+        <label for="fquantity">Quantity:</label><br>
+        <input type="number" step="any" min="0" id="lquantity" name="lquantity" value="5"><br>
+        <button id="confirm-investment-button">Confirm</button>
+    </div>
 </div>
 
-<button id="RemoveInvestmentsButton">Remove selected investment</button>
-<button id="AddInvestmentsButton">Add investment</button>
+<button id="remove-investment-button">Remove selected investment</button>
+<button id="add-investment-button">Add investment</button>

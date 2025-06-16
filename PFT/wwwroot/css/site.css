@@ -43,15 +43,3 @@ footer, header {
 footer > div{
     color:#FFFFFF;
 }
-
-button{
-    padding:1vh 1vw;
-    border:none;
-    font-size:1.2rem;
-    background:#284B63;
-    color:#ffffff;
-}
-
-#RefreshInvestmentsButton{
-    float:right;
-}
