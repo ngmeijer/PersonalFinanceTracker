@@ -6,6 +6,7 @@ namespace PFT.Models
     {
         public DateTime LatestUpdateTime;
         private Dictionary<string, InvestmentData> _investments = new Dictionary<string, InvestmentData>();
+        public InvestmentType InvestmentTypeToAdd;
 
         public void AddInvestment(string symbol, InvestmentData data)
         {
@@ -42,9 +43,7 @@ namespace PFT.Models
     public class InvestmentData
     {
         public TwelveDataQuote StockData { get; set; }
-
         public InvestmentType Type;
-
         public float AmountHeld { get; set; }
         public float CurrentValue { get; set; }
 

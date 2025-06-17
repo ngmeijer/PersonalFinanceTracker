@@ -2,10 +2,6 @@
     color:white;
 }
 
-#main-content{
-    
-}
-
 #general-information{
     display:flex;
     justify-content: space-between;
@@ -58,16 +54,29 @@ button{
     float:right;
 }
 
-#add-investment-modal{
-    display:none;
-    position:absolute;
-    left:25%;
-    top:30vh;
-    width:30%;
-    height:25vh;
-    background:#ade8f4;
+#add-investment-modal {
+    position: relative;
+    display: flex;
+    width: 20vw;
+    top:0%;
+    left:1%;
+    margin-bottom:20px;
+    background: #ade8f4;
     border-radius: 20px;
-    text-align: center;
+    transform-origin:center;
+    flex-direction: column;
+    align-items:center;
+}
+
+.data-container{
+    display:flex;
+    justify-content:space-between;
+    width:90%;
+}
+
+.data-container > * {
+    padding:0;
+    margin:0;
 }
 
 #confirm-investment-button{

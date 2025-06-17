@@ -10,22 +10,46 @@
             $.ajax({
                 url: '@Url.Action("RefreshData", "Investments")',
                 type: 'POST',
-                success: function(html){
+                success: function (html) {
                     $("#investments-container").html(html);
                 }
             });
         });
-        
+
         const investmentModal = document.getElementById("add-investment-modal");
         const addInvestmentButton = document.getElementById("add-investment-button");
         const confirmInvestmentButton = document.getElementById("confirm-investment-button");
         addInvestmentButton.onclick = function () {
-            investmentModal.style.display = "block";    
+            investmentModal.style.display = "flex";
         }
-        
+
         confirmInvestmentButton.onclick = function () {
-            investmentModal.style.display = "none";    
+            investmentModal.style.display = "none";
         }
+
+        $("#confirm-investment-button").click(function () {
+            var givenSymbol = $('#symbol').val();
+            var givenQuantity = $('#quantity').val();
+            var givenType = $('#investmentType').val();
+            var requiredData = {              
+                    Symbol: givenSymbol,
+                    Quantity: givenQuantity,
+                    Type: givenType
+            };
+            console.log(requiredData)
+            $.ajax({
+                url: '@Url.Action("AddInvestment", "Investments")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(requiredData),
+                success: function (response) {
+                    console.log('Success:', response)
+                },
+                 error: function (response) {
+                    console.log('Failure:', response, " - provided data:", requiredData)
+                }
+            });
+        });
 
     </script>
 }
@@ -37,13 +61,27 @@
     <div id="investments-container">
         @await Html.PartialAsync("_InvestmentTablePartial", Model)
     </div>
-    
+
     <div id="add-investment-modal">
         <h2>Add investment</h2>
-        <label for="fname">Symbol:</label><br>
-        <input type="text" id="fsymbol" name="fsymbol" value="NVDA"><br>
-        <label for="fquantity">Quantity:</label><br>
-        <input type="number" step="any" min="0" id="lquantity" name="lquantity" value="5"><br>
+        <div class="data-container">
+            <label for="name">Symbol:</label><br>
+            <input type="text" id="symbol" name="symbol" value="NVDA">
+        </div>
+
+        <div class="data-container">
+            <label for="quantity">Quantity:</label>
+            <input type="number" step="any" min="0" id="quantity" name="quantity" value="5" />
+        </div>
+
+        <div class="data-container">
+            <label asp-for="InvestmentTypeToAdd" class="col-md-2 control-label">Type:</label>
+            <select id="investmentType" name="Type"
+                    asp-for="InvestmentTypeToAdd"
+                    asp-items="Html.GetEnumSelectList<InvestmentType>()">
+            </select>
+        </div>
+
         <button id="confirm-investment-button">Confirm</button>
     </div>
 </div>

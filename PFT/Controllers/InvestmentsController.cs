@@ -30,11 +30,26 @@ namespace PFT.Controllers
 
         public async Task<IActionResult> Investments()
         {
-            await AddInvestment("NVDA", 3, InvestmentType.Stock);
-            await AddInvestment("AAPL", 7, InvestmentType.Stock);
+            await AddInvestment(new InvestmentRequest()
+            {
+                Symbol = "NVDA",
+                Quantity = 5,
+                Type = (int)InvestmentType.Stock
+            });
 
-            await AddInvestment("SPY", 15, InvestmentType.ETF);
+            await AddInvestment(new InvestmentRequest()
+            {
+                Symbol = "AAPL",
+                Quantity = 25,
+                Type = (int)InvestmentType.Stock
+            });
 
+            await AddInvestment(new InvestmentRequest()
+            {
+                Symbol = "SPY",
+                Quantity = 2,
+                Type = (int)InvestmentType.ETF
+            });
 
             _investmentsModel.LatestUpdateTime = DateTime.Now;
             return View(_investmentsModel);
@@ -54,17 +69,25 @@ namespace PFT.Controllers
             }
         }
 
-        public async Task AddInvestment(string symbol, float amount, InvestmentType type)
+        public async Task<IActionResult> AddInvestment([FromBody] InvestmentRequest request)
         {
-            TwelveDataQuote data = await RequestStockData(symbol);
+            if (request == null)
+            {
+                return BadRequest("No data received.");
+            }
+
+            TwelveDataQuote data = await RequestStockData(request.Symbol);
             InvestmentData investmentData = new InvestmentData()
             {
-                AmountHeld = amount,
+                AmountHeld = request.Quantity,
                 StockData = data,
-                Type = type
+                Type = (InvestmentType)request.Type
             };
             investmentData.CalculateValue();
             _investmentsModel.AddInvestment(data.Symbol, investmentData);
+            await RefreshData();
+
+            return Ok(new { dataReceived = data });
         }
 
         [HttpPost]
@@ -76,9 +99,9 @@ namespace PFT.Controllers
             //TODO Connect to database to retrieve the investments held. AddInvestments calls are placeholders
             if (_investmentsModel.GetInvestments().Count == 0)
             {
-                await AddInvestment("NVDA", 3, InvestmentType.Stock);
-                await AddInvestment("AAPL", 7, InvestmentType.Stock);
-                await AddInvestment("SPY", 15, InvestmentType.ETF);
+                //await AddInvestment("NVDA", 3, InvestmentType.Stock);
+                //await AddInvestment("AAPL", 7, InvestmentType.Stock);
+                //await AddInvestment("SPY", 15, InvestmentType.ETF);
             }
 
             Dictionary<string, InvestmentData> investmentsCollection = _investmentsModel.GetInvestments();
@@ -93,3 +116,10 @@ namespace PFT.Controllers
         }
     }
 } 
+
+public class InvestmentRequest
+{
+    public required string Symbol { get; set; }
+    public required int Quantity { get; set; }
+    public int Type { get; set; }
+}
