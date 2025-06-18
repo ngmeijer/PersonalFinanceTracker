@@ -26,12 +26,12 @@
                     <th>Absolute change</th>
                 </tr>
                 </thead>
-                @foreach (KeyValuePair<string, InvestmentData> entry in Model.GetInvestments())
+                @foreach (KeyValuePair<string, Investment> entry in Model.GetInvestments())
                 {
                     if (entry.Value.Type != InvestmentType.ETF)
                         continue;
 
-                    var data = entry.Value.StockData;
+                    @* var data = entry.Value.StockData;
                     var changeClass = data.Change < 0 ? "negative" : "positive";
 
                     <tr>
@@ -42,7 +42,7 @@
                         <td>@data.Close @data.Currency</td>
                         <td class="@changeClass">@Math.Round(data.PercentChange, 3)%</td>
                         <td class="@changeClass">@Math.Round(data.Change, 3)</td>
-                    </tr>
+                    </tr> *@
                 }
             }
             </tbody>
@@ -72,12 +72,12 @@
                 <th>Current price</th>
             </tr>
             </thead>
-            @foreach (KeyValuePair<string, InvestmentData> entry in Model.GetInvestments())
+            @foreach (KeyValuePair<string, Investment> entry in Model.GetInvestments())
             {
                 if (entry.Value.Type != InvestmentType.Stock)
                     continue;
 
-                var data = entry.Value.StockData;
+                @* var data = entry.Value.StockData;
                 var changeClass = data.Change < 0 ? "negative" : "positive";
 
                 <tr>
@@ -88,7 +88,7 @@
                     <td class="@changeClass">@Math.Round(data.PercentChange, 4)%</td>
                     <td class="@changeClass">@Math.Round(data.Change, 4)</td>
                     <td>@data.Close @data.Currency</td>
-                </tr>
+                </tr> *@
             }
         }
         </tbody>

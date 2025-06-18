@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
+using PFT.Data;
 using PFT.Models;
+using PFT.Services;
 using PFT.Utilities;
 using System.Net.Http;
 using TwelveDataSharp;
@@ -10,17 +13,13 @@ namespace PFT.Controllers
 {
     public class InvestmentsController : Controller
     {
-        private InvestmentsModel _investmentsModel;
-        private HttpClient _httpClient;
-        private ITwelveDataClient _twelveDataClient;
+        private IInvestmentService _service;
+        private InvestmentsModel _model;
 
-        public InvestmentsController()
+        public InvestmentsController(IInvestmentService service)
         {
-            _investmentsModel = new();
-            _httpClient = new HttpClient();
-
-            string apiKey = Utilities.Utilities.ReadFromFile("apikey.txt");
-            _twelveDataClient = new TwelveDataClient(apiKey, _httpClient);
+            _service = service;
+            _model = new();
         }
 
         public ActionResult Index()
@@ -30,43 +29,7 @@ namespace PFT.Controllers
 
         public async Task<IActionResult> Investments()
         {
-            await AddInvestment(new InvestmentRequest()
-            {
-                Symbol = "NVDA",
-                Quantity = 5,
-                Type = (int)InvestmentType.Stock
-            });
-
-            await AddInvestment(new InvestmentRequest()
-            {
-                Symbol = "AAPL",
-                Quantity = 25,
-                Type = (int)InvestmentType.Stock
-            });
-
-            await AddInvestment(new InvestmentRequest()
-            {
-                Symbol = "SPY",
-                Quantity = 2,
-                Type = (int)InvestmentType.ETF
-            });
-
-            _investmentsModel.LatestUpdateTime = DateTime.Now;
-            return View(_investmentsModel);
-        }
-
-        public async Task<TwelveDataQuote> RequestStockData(string symbol)
-        {
-            try
-            {
-                TwelveDataQuote stockData = await _twelveDataClient.GetQuoteAsync(symbol, "5min");
-                return stockData;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error: {e.Message}");
-                return null;
-            }
+             return View();
         }
 
         public async Task<IActionResult> AddInvestment([FromBody] InvestmentRequest request)
@@ -76,15 +39,7 @@ namespace PFT.Controllers
                 return BadRequest("No data received.");
             }
 
-            TwelveDataQuote data = await RequestStockData(request.Symbol);
-            InvestmentData investmentData = new InvestmentData()
-            {
-                AmountHeld = request.Quantity,
-                StockData = data,
-                Type = (InvestmentType)request.Type
-            };
-            investmentData.CalculateValue();
-            _investmentsModel.AddInvestment(data.Symbol, investmentData);
+            var data = await _service.AddInvestmentAsync(request);
             await RefreshData();
 
             return Ok(new { dataReceived = data });
@@ -93,33 +48,9 @@ namespace PFT.Controllers
         [HttpPost]
         public async Task<PartialViewResult> RefreshData()
         {
-            if (_investmentsModel == null)
-                _investmentsModel = new();
+            await _service.RefreshData();
 
-            //TODO Connect to database to retrieve the investments held. AddInvestments calls are placeholders
-            if (_investmentsModel.GetInvestments().Count == 0)
-            {
-                //await AddInvestment("NVDA", 3, InvestmentType.Stock);
-                //await AddInvestment("AAPL", 7, InvestmentType.Stock);
-                //await AddInvestment("SPY", 15, InvestmentType.ETF);
-            }
-
-            Dictionary<string, InvestmentData> investmentsCollection = _investmentsModel.GetInvestments();
-            foreach(KeyValuePair<string, InvestmentData> entry in investmentsCollection)
-            {
-                entry.Value.StockData = await RequestStockData(entry.Key);
-                entry.Value.CalculateValue();
-            }
-            _investmentsModel.LatestUpdateTime = DateTime.Now; 
-
-            return PartialView("_InvestmentTablePartial", _investmentsModel);
+            return PartialView("_InvestmentTablePartial", _model);
         }
     }
 } 
-
-public class InvestmentRequest
-{
-    public required string Symbol { get; set; }
-    public required int Quantity { get; set; }
-    public int Type { get; set; }
-}
