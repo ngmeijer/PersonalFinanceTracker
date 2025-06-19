@@ -29,7 +29,7 @@ namespace PFT.Controllers
 
         public async Task<IActionResult> Investments()
         {
-             return View(_model);
+            return View(_model);
         }
 
         public async Task<IActionResult> AddInvestment([FromBody] InvestmentRequest request)
@@ -48,11 +48,11 @@ namespace PFT.Controllers
         [HttpPost]
         public async Task<PartialViewResult> RefreshData()
         {
-            await _service.RefreshData();
-
+            _model.Investments = await _service.RefreshData();
+            
             _model.LatestUpdateTime = DateTime.Now;
 
             return PartialView("_InvestmentTablePartial", _model);
         }
     }
-} 
+}

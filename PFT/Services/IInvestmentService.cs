@@ -5,6 +5,6 @@ namespace PFT.Services
     public interface IInvestmentService
     {
         Task<ServiceResult> AddInvestmentAsync(InvestmentRequest request);
-        Task<ServiceResult> RefreshData();
+        Task<Dictionary<string, InvestmentWrapper>> RefreshData();
      }
 }

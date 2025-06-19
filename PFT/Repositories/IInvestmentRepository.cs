@@ -6,6 +6,6 @@ namespace PFT.Repositories
     {
         Task AddInvestmentAsync (Investment investment);
 
-        Task<Dictionary<string, Investment>> GetAllInvestmentsAsync();
+        Task<Dictionary<string, InvestmentWrapper>> GetAllInvestmentsAsync();
     }
 }

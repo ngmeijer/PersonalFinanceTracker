@@ -11,10 +11,16 @@ namespace PFT.Models
         public string Symbol { get; set; }
         public InvestmentType Type { get; set; }
         public float Quantity { get; set; }
+    }
+
+    public class InvestmentWrapper
+    {
+        public Investment CachedData { get; set; }
+        public TwelveDataQuote StockData { get; set; }
 
         public float CalculateValue()
         {
-            return (float)(Quantity * 1);
+            return (float)(CachedData.Quantity * StockData.Close);
         }
     }
 }

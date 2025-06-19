@@ -9,42 +9,42 @@
         <h3>ETFs</h3>
         <table>
             <tbody>
-            @if (Model.GetInvestments().Count == 0)
-            {
-                <h3>No data available</h3>
-            }
-            else
-            {
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Symbol</th>
-                    <th>Amount held</th>
-                    <th>Current total value</th>
-                    <th>Current price</th>
-                    <th>Percentual change</th>
-                    <th>Absolute change</th>
-                </tr>
-                </thead>
-                @foreach (KeyValuePair<string, Investment> entry in Model.GetInvestments())
+                @if (Model.GetInvestments().Count == 0)
                 {
-                    if (entry.Value.Type != InvestmentType.ETF)
-                        continue;
+                    <h3>No data available</h3>
+                }
+                else
+                {
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Symbol</th>
+                        <th>Amount held</th>
+                        <th>Current total value</th>
+                        <th>Current price</th>
+                        <th>Percentual change</th>
+                        <th>Absolute change</th>
+                    </tr>
+                </thead>
+                    @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
+                    {
+                        if (entry.Value.CachedData.Type != InvestmentType.ETF)
+                            continue;
 
-                    @* var data = entry.Value.StockData;
-                    var changeClass = data.Change < 0 ? "negative" : "positive";
+                        var stockData = entry.Value.StockData;
+                        var changeClass = stockData.Change < 0 ? "negative" : "positive";
 
                     <tr>
-                        <td>@data.Name</td>
-                        <td>@data.Symbol</td>
-                        <td>@entry.Value.AmountHeld</td>
-                        <td>@entry.Value.CurrentValue @data.Currency</td>
-                        <td>@data.Close @data.Currency</td>
-                        <td class="@changeClass">@Math.Round(data.PercentChange, 3)%</td>
-                        <td class="@changeClass">@Math.Round(data.Change, 3)</td>
-                    </tr> *@
+                        <td>@stockData.Name</td>
+                        <td>@stockData.Symbol</td>
+                        <td>@entry.Value.CachedData.Quantity</td>
+                        <td>@entry.Value.CalculateValue() @stockData.Currency</td>
+                        <td>@stockData.Close @stockData.Currency</td>
+                        <td class="@changeClass">@Math.Round(stockData.PercentChange, 3)%</td>
+                        <td class="@changeClass">@Math.Round(stockData.Change, 3)</td>
+                    </tr>
+                    }
                 }
-            }
             </tbody>
         </table>
     </div>
@@ -55,42 +55,42 @@
     <h3>Stocks</h3>
     <table>
         <tbody>
-        @if (Model.GetInvestments().Count == 0)
-        {
-            <h3>No data available</h3>
-        }
-        else
-        {
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Symbol</th>
-                <th>Amount held</th>
-                <th>Current total value</th>
-                <th>Percentual change</th>
-                <th>Absolute change</th>
-                <th>Current price</th>
-            </tr>
-            </thead>
-            @foreach (KeyValuePair<string, Investment> entry in Model.GetInvestments())
+            @if (Model.GetInvestments().Count == 0)
             {
-                if (entry.Value.Type != InvestmentType.Stock)
-                    continue;
+                <h3>No data available</h3>
+            }
+            else
+            {
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Symbol</th>
+                    <th>Amount held</th>
+                    <th>Current total value</th>
+                    <th>Percentual change</th>
+                    <th>Absolute change</th>
+                    <th>Current price</th>
+                </tr>
+            </thead>
+                @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
+                {
+                    if (entry.Value.CachedData.Type != InvestmentType.Stock)
+                        continue;
 
-                @* var data = entry.Value.StockData;
-                var changeClass = data.Change < 0 ? "negative" : "positive";
+                    var stockData = entry.Value.StockData;
+                    var changeClass = stockData.Change < 0 ? "negative" : "positive";
 
                 <tr>
-                    <td>@data.Name</td>
-                    <td>@data.Symbol</td>
-                    <td>@entry.Value.AmountHeld</td>
-                    <td>@entry.Value.CurrentValue @data.Currency</td>
-                    <td class="@changeClass">@Math.Round(data.PercentChange, 4)%</td>
-                    <td class="@changeClass">@Math.Round(data.Change, 4)</td>
-                    <td>@data.Close @data.Currency</td>
-                </tr> *@
+                    <td>@stockData.Name</td>
+                    <td>@stockData.Symbol</td>
+                    <td>@entry.Value.CachedData.Quantity</td>
+                    <td>@entry.Value.CalculateValue() @stockData.Currency</td>
+                    <td class="@changeClass">@Math.Round(stockData.PercentChange, 4)%</td>
+                    <td class="@changeClass">@Math.Round(stockData.Change, 4)</td>
+                    <td>@stockData.Close @stockData.Currency</td>
+                </tr>
+                }
             }
-        }
         </tbody>
     </table>
 </div>

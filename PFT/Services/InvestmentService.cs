@@ -7,6 +7,9 @@ using TwelveDataSharp.Library.ResponseModels;
 
 namespace PFT.Services
 {
+    /// <summary>
+    /// InvestmentService is meant to retrieve data from APIs - business logic.
+    /// </summary>
     public class InvestmentService : IInvestmentService
     {
         private IInvestmentRepository _repository;
@@ -30,7 +33,7 @@ namespace PFT.Services
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = "Failed to retrieve data"
+                    Message = $"Failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
                 };
             }
 
@@ -63,20 +66,19 @@ namespace PFT.Services
             }
         }
 
-        public async Task<ServiceResult> RefreshData()
+        /// <summary>
+        /// This is the only method where the data retrieved from TwelveData's stock API is actually used. Any time the Refresh button is clicked or an investment is added, the full table is updated.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Dictionary<string, InvestmentWrapper>> RefreshData()
         {
-            Dictionary<string, Investment> investmentsCollection = await _repository.GetAllInvestmentsAsync();
-            foreach (KeyValuePair<string, Investment> entry in investmentsCollection)
+            Dictionary<string, InvestmentWrapper> investmentsCollection = await _repository.GetAllInvestmentsAsync();
+            foreach (KeyValuePair<string, InvestmentWrapper> entry in investmentsCollection)
             {
                 entry.Value.StockData = await RequestStockData(entry.Key);
-                entry.Value.CalculateValue();
             }
 
-            return new ServiceResult
-            {
-                Success = true,
-                Message = "Successfully refreshed investment data"
-            };
+            return investmentsCollection;
         }
     }
 }
