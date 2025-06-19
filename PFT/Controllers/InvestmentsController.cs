@@ -24,12 +24,12 @@ namespace PFT.Controllers
 
         public ActionResult Index()
         {
-            return View("Investments");
+            return View("Investments", _model);
         }
 
         public async Task<IActionResult> Investments()
         {
-             return View();
+             return View(_model);
         }
 
         public async Task<IActionResult> AddInvestment([FromBody] InvestmentRequest request)
@@ -49,6 +49,8 @@ namespace PFT.Controllers
         public async Task<PartialViewResult> RefreshData()
         {
             await _service.RefreshData();
+
+            _model.LatestUpdateTime = DateTime.Now;
 
             return PartialView("_InvestmentTablePartial", _model);
         }

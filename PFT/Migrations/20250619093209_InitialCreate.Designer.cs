@@ -11,8 +11,8 @@ using PFT.Data;
 namespace PFT.Migrations
 {
     [DbContext(typeof(PFTContext))]
-    [Migration("20250618131905_initial migration")]
-    partial class initialmigration
+    [Migration("20250619093209_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,9 @@ namespace PFT.Migrations
                     b.Property<string>("Symbol")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

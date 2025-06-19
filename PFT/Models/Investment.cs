@@ -9,12 +9,12 @@ namespace PFT.Models
     {
         public int Id { get; set; }
         public string Symbol { get; set; }
-        public InvestmentType Type;
-        public float AmountHeld { get; set; }
+        public InvestmentType Type { get; set; }
+        public float Quantity { get; set; }
 
-        public float CalculateValue(float currentPrice)
+        public float CalculateValue()
         {
-            return (float)(AmountHeld * currentPrice);
+            return (float)(Quantity * 1);
         }
     }
 }

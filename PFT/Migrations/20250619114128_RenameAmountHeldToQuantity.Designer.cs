@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PFT.Data;
 
@@ -10,9 +11,11 @@ using PFT.Data;
 namespace PFT.Migrations
 {
     [DbContext(typeof(PFTContext))]
-    partial class PFTContextModelSnapshot : ModelSnapshot
+    [Migration("20250619114128_RenameAmountHeldToQuantity")]
+    partial class RenameAmountHeldToQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -37,9 +37,10 @@ namespace PFT.Services
             Investment investmentData = new Investment()
             {
                 Symbol = data.Symbol,
-                AmountHeld = request.Quantity,
+                Quantity = request.Quantity,
                 Type = (InvestmentType)request.Type
             };
+
             await _repository.AddInvestmentAsync(investmentData);
             return new ServiceResult
             {
@@ -64,12 +65,12 @@ namespace PFT.Services
 
         public async Task<ServiceResult> RefreshData()
         {
-            //Dictionary<string, Investment> investmentsCollection = _repository.GetInvestments();
-            //foreach (KeyValuePair<string, Investment> entry in investmentsCollection)
-            //{
-            //    entry.Value.StockData = await RequestStockData(entry.Key);
-            //    entry.Value.CalculateValue();
-            //}
+            Dictionary<string, Investment> investmentsCollection = await _repository.GetAllInvestmentsAsync();
+            foreach (KeyValuePair<string, Investment> entry in investmentsCollection)
+            {
+                entry.Value.StockData = await RequestStockData(entry.Key);
+                entry.Value.CalculateValue();
+            }
 
             return new ServiceResult
             {

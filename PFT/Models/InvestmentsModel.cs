@@ -13,8 +13,6 @@
                 return;
             }
 
-            //data.CurrentValue = (float)(data.AmountHeld * data.StockData.Close);
-
             if (_investments.ContainsKey(symbol))
             {
                 _investments[symbol] = data;
@@ -31,7 +29,7 @@
             float portfolioValue = 0;
             foreach(var item in _investments)
             {
-                //portfolioValue += item.Value.CurrentValue;
+                portfolioValue += item.Value.CalculateValue();
             }
 
             return portfolioValue;
