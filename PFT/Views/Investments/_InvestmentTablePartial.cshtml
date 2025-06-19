@@ -74,6 +74,12 @@
             </thead>
                 @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
                 {
+                    if (string.IsNullOrEmpty(entry.Value.StockData.Name))
+                    {
+                        <td>Exceeded API calls. Try again later.</td>
+                        continue;
+                    }
+
                     if (entry.Value.CachedData.Type != InvestmentType.Stock)
                         continue;
 
