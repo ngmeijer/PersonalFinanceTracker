@@ -21,20 +21,60 @@
         const contentBehindModal = document.getElementsByClassName('content')[0];
         const errorText = document.getElementById('error-content');
 
-        const investmentModal = document.getElementById("add-investment-modal");
-        const addInvestmentButton = document.getElementById("add-investment-button");
-        const confirmInvestmentButton = document.getElementById("confirm-investment-button");
-        const closeModalbutton = document.getElementById("cancel-investment-button");
-        addInvestmentButton.onclick = function () {
-            investmentModal.style.display = "flex";
-            contentBehindModal.classList.add('blur');
-        }
+        //Modals
+        const addInvestmentModal = document.getElementById("add-investment-modal");
+        const removeInvestmentModal = document.getElementById("remove-investment-modal");
+        const changeQuantityModal = document.getElementById("change-quantity-investment-modal");
 
-        closeModalbutton.onclick = function () {
-            investmentModal.style.display = "none";
+        //Adding investment
+        const addInvestmentButton = document.getElementById("add-investment-button");
+        const confirmInvestmentButton = document.getElementById("confirm-add-investment-button");
+        const cancelAddInvestmentButton = document.getElementById("cancel-add-investment-button");
+
+        //Remove investment
+        const removeInvestmentButton = document.getElementById("remove-investment-button");
+        const confirmRemoveInvestmentButton = document.getElementById("confirm-remove-investment-button");
+        const cancelRemoveInvestmentButton = document.getElementById("cancel-remove-investment-button");
+
+        //Change quantity
+        const changeQuantityButton = document.getElementById("change-quantity-button");
+        const confirmQuantityButton = document.getElementById("confirm-quantity-investment-button");
+        const cancelQuantityButton = document.getElementById("cancel-quantity-investment-button");
+
+        //Cancel add
+        cancelAddInvestmentButton.onclick = function () {
+            addInvestmentModal.style.display = "none";
             contentBehindModal.classList.remove("blur");
             errorText.style.display = 'none';
             errorText.innerHTML = "";
+        }
+
+        //Cancel remove
+        cancelRemoveInvestmentButton.onclick = function () {
+            removeInvestmentModal.style.display = "none";
+            contentBehindModal.classList.remove("blur");
+        }
+
+        //Cancel change quantity
+        cancelQuantityButton.onclick = function () {
+            changeQuantityModal.style.display = "none";
+            contentBehindModal.classList.remove("blur");
+        }
+
+        /////Enable investment modals
+        addInvestmentButton.onclick = function () {
+            addInvestmentModal.style.display = "flex";
+            contentBehindModal.classList.add('blur');
+        }
+
+        removeInvestmentButton.onclick = function () {
+            removeInvestmentModal.style.display = "flex";
+            contentBehindModal.classList.add('blur');
+        }
+
+        changeQuantityButton.onclick = function () {
+            changeQuantityModal.style.display = "flex";
+            contentBehindModal.classList.add('blur');
         }
 
         $("#confirm-investment-button").click(function () {
@@ -68,7 +108,7 @@
                     const symbolSpan = document.getElementById('error-message-symbol');
                     if (symbolSpan) {
                         symbolSpan.textContent = givenSymbol;
-                        symbolSpan.style.color = "red"; // optional
+                        symbolSpan.style.color = "red";
                     }
                     console.log('Failure:', response, " - provided data:", requiredData);
                 }
@@ -94,9 +134,10 @@
 
     <button id="remove-investment-button">Remove selected investment</button>
     <button id="add-investment-button">Add investment</button>
+    <button id="change-quantity-button">Change quantity</button>
 </div>
 
-<div id="add-investment-modal">
+<div id="add-investment-modal" class="investment-action-modal">
     <h2>Add investment</h2>
     <div class="data-container">
         <label for="name">Symbol:</label><br>
@@ -116,9 +157,33 @@
         </select>
     </div>
 
-    <div id="modal-buttons">
-        <button id="cancel-investment-button">Cancel</button>
-        <button id="confirm-investment-button">Confirm</button>
+    <div class="modal-buttons">
+        <button id="cancel-add-investment-button">Cancel</button>
+        <button id="confirm-add-investment-button">Confirm</button>
     </div>
     <p id="error-content"></p>
+</div>
+
+<div id="remove-investment-modal" class="investment-action-modal">
+    <h2>Remove investment</h2>
+    <p>Are you sure you want to remove this investment?</p>
+
+    <div class="modal-buttons">
+        <button id="cancel-remove-investment-button">Cancel</button>
+        <button id="confirm-remove-investment-button">Confirm</button>
+    </div>
+</div>
+
+<div id="change-quantity-investment-modal" class="investment-action-modal">
+    <h2>Change quantity</h2>
+    <p>How many units do you own now?</p>
+    <div class="data-container">
+        <label for="quantity">Quantity:</label>
+        <input type="number" step="any" min="0" id="quantity" name="quantity" value="5" />
+    </div>
+
+    <div class="modal-buttons">
+        <button id="cancel-quantity-investment-button">Cancel</button>
+        <button id="confirm-quantity-investment-button">Confirm</button>
+    </div>
 </div>
