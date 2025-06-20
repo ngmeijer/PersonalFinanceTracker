@@ -4,6 +4,8 @@
 
 @model InvestmentsModel
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 @section Scripts {
     <script>
         $("#refresh-investments-button").click(function () {
@@ -31,6 +33,8 @@
         closeModalbutton.onclick = function () {
             investmentModal.style.display = "none";
             contentBehindModal.classList.remove("blur");
+            errorText.style.display = 'none';
+            errorText.innerHTML = "";
         }
 
         $("#confirm-investment-button").click(function () {
@@ -69,6 +73,12 @@
                     console.log('Failure:', response, " - provided data:", requiredData);
                 }
             });
+        });
+
+        $(".investment-table tr").click(function () {
+            $(".investment-table").not($(this).closest("table")).find("tr").removeClass("selected-investment");
+            $(this).addClass('selected-investment').siblings().removeClass('selected-investment');
+            var value = $(this).find('td:first').html();
         });
 
     </script>

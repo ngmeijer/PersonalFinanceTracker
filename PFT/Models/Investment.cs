@@ -13,7 +13,7 @@ namespace PFT.Models
         public float Quantity { get; set; }
     }
 
-    public class InvestmentWrapper
+    public partial class InvestmentWrapper
     {
         public Investment CachedData { get; set; }
         public TwelveDataQuote StockData { get; set; }

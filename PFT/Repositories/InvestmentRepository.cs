@@ -33,6 +33,21 @@ namespace PFT.Repositories
             await command.ExecuteNonQueryAsync();
         }
 
+        public async Task ChangeInvestmentQuantityAsync(Investment investment)
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            await connection.OpenAsync();
+
+            SqlCommand command = new SqlCommand(@"UPDATE Investments SET Quantity = @quantity WHERE Symbol = @symbol AND Type = @type");
+
+            command.Parameters.AddWithValue("@symbol", investment.Symbol);
+            command.Parameters.AddWithValue("@quantity", investment.Quantity);
+            command.Parameters.AddWithValue("@type", investment.Type);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
         public async Task<Dictionary<string, InvestmentWrapper>> GetAllInvestmentsAsync()
         {
             Dictionary<string, InvestmentWrapper> data = new();
@@ -62,6 +77,11 @@ namespace PFT.Repositories
             }
 
             return data;
+        }
+
+        public Task RemoveInvestmentAsync(string symbol)
+        {
+            throw new NotImplementedException();
         }
     }
 }

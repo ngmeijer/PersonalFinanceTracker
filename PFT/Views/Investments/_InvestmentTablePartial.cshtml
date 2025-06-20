@@ -7,7 +7,7 @@
     </div>
     <div class="investment-category">
         <h3>ETFs</h3>
-        <table>
+        <table class="investment-table">
             <tbody>
                 @if (Model.GetInvestments().Count == 0)
                 {
@@ -59,7 +59,7 @@
 
 <div class="investment-category">
     <h3>Stocks</h3>
-    <table>
+    <table class="investment-table">
         <tbody>
             @if (Model.GetInvestments().Count == 0)
             {

@@ -33,7 +33,16 @@ namespace PFT.Services
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = $"Failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
+                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
+                };
+            }
+
+            if (string.IsNullOrEmpty(data.Name))
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
                 };
             }
 
@@ -79,6 +88,47 @@ namespace PFT.Services
             }
 
             return investmentsCollection;
+        }
+
+        public Task<ServiceResult> RemoveInvestmentAsync(string symbol)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResult> AdjustInvestmentQuantityAsync(Investment request)
+        {
+            TwelveDataQuote data = await RequestStockData(request.Symbol);
+            if (data == null)
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
+                };
+            }
+
+            if (string.IsNullOrEmpty(data.Name))
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
+                };
+            }
+
+            Investment investmentData = new Investment()
+            {
+                Symbol = data.Symbol,
+                Quantity = request.Quantity,
+                Type = (InvestmentType)request.Type
+            };
+
+            await _repository.ChangeInvestmentQuantityAsync(investmentData);
+            return new ServiceResult
+            {
+                Success = true,
+                Message = "Investment quantity changed successfully"
+            };
         }
     }
 }

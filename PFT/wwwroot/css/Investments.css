@@ -100,6 +100,7 @@ input, label {
 }
 
 #error-content{
+    display:none;
     width:100%;
     height:auto;
     text-align:center;
@@ -114,4 +115,8 @@ input, label {
 
 #error-message-symbol{
     color:red;
+}
+
+.selected-investment {
+    background-color: #48cae4;
 }

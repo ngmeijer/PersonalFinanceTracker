@@ -13,7 +13,7 @@ namespace PFT.Controllers
 {
     public class InvestmentsController : Controller
     {
-        private IInvestmentService _service;
+        private IInvestmentService? _service;
         private InvestmentsModel _model;
 
         public InvestmentsController(IInvestmentService service)
@@ -34,6 +34,7 @@ namespace PFT.Controllers
             return View(_model);
         }
 
+        [HttpPost]
         public async Task<IActionResult> AddInvestment([FromBody] InvestmentRequest request)
         {
             if (request == null)
@@ -41,10 +42,54 @@ namespace PFT.Controllers
                 return BadRequest("No data received.");
             }
 
-            var data = await _service.AddInvestmentAsync(request);
-            await RefreshData();
+            try
+            {
+                var result = await _service.AddInvestmentAsync(request);
+                if (!result.Success)
+                {
+                    return BadRequest(result.Message);
+                }
 
-            return Ok(new { dataReceived = data });
+                await RefreshData();
+
+                return Ok(new { dataReceived = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occured here: {ex.Message}");
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveInvestment(string symbol)
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> AdjustQuantityOfInvestment(Investment request) 
+        {
+            if (request == null)
+            {
+                return BadRequest("No data received.");
+            }
+
+            try
+            {
+                var result = await _service.AdjustInvestmentQuantityAsync(request);
+                if (!result.Success)
+                {
+                    return BadRequest(result.Message);
+                }
+
+                await RefreshData();
+
+                return Ok(new { dataReceived = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occured here: {ex.Message}");
+            }
         }
 
         [HttpPost]
