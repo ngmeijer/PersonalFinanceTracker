@@ -18,9 +18,21 @@ namespace PFT.Models
         public Investment CachedData { get; set; }
         public TwelveDataQuote StockData { get; set; }
 
+        public float PercentageOfTotalValue {  get; set; }
+
         public float CalculateValue()
         {
             return (float)(CachedData.Quantity * StockData.Close);
+        }
+
+        public float CalculatePercentageOfTotalValue(float totalValue)
+        {
+            return CalculateValue() / totalValue;
+        }
+
+        public float CalculatePercentageOfTotalStockAmount(float totalStockCount)
+        {
+            return CalculateValue() / totalStockCount;
         }
     }
 }

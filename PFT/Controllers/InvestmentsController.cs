@@ -29,6 +29,8 @@ namespace PFT.Controllers
 
         public async Task<IActionResult> Investments()
         {
+            await RefreshData();
+
             return View(_model);
         }
 

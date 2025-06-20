@@ -16,27 +16,33 @@
             });
         });
 
+        const contentBehindModal = document.getElementsByClassName('content')[0];
+        const errorText = document.getElementById('error-content');
+
         const investmentModal = document.getElementById("add-investment-modal");
         const addInvestmentButton = document.getElementById("add-investment-button");
         const confirmInvestmentButton = document.getElementById("confirm-investment-button");
+        const closeModalbutton = document.getElementById("cancel-investment-button");
         addInvestmentButton.onclick = function () {
             investmentModal.style.display = "flex";
+            contentBehindModal.classList.add('blur');
         }
 
-        confirmInvestmentButton.onclick = function () {
+        closeModalbutton.onclick = function () {
             investmentModal.style.display = "none";
+            contentBehindModal.classList.remove("blur");
         }
 
         $("#confirm-investment-button").click(function () {
             var givenSymbol = $('#symbol').val();
             var givenQuantity = $('#quantity').val();
             var givenType = $('#investmentType').val();
-            var requiredData = {              
-                    Symbol: givenSymbol,
-                    Quantity: givenQuantity,
-                    Type: givenType
+            var requiredData = {
+                Symbol: givenSymbol,
+                Quantity: givenQuantity,
+                Type: givenType
             };
-            console.log(requiredData)
+
             $.ajax({
                 url: '@Url.Action("AddInvestment", "Investments")',
                 type: 'POST',
@@ -44,9 +50,23 @@
                 data: JSON.stringify(requiredData),
                 success: function (response) {
                     console.log('Success:', response)
+                    investmentModal.style.display = "none";
+                    contentBehindModal.classList.remove('blur');
+
+                    errorText.style.display = 'none';
+                    errorText.innerHTML = "";
                 },
-                 error: function (response) {
-                    console.log('Failure:', response, " - provided data:", requiredData)
+                error: function (response) {
+                    errorText.style.display = 'block';
+                    var errorMessage = "An error occured. Please check if the symbol: ";
+                    console.log("Error text reference: ", errorText);
+                    errorText.innerHTML = 'An error occurred. Please check if the symbol: <span id="error-message-symbol"></span> is valid.';
+                    const symbolSpan = document.getElementById('error-message-symbol');
+                    if (symbolSpan) {
+                        symbolSpan.textContent = givenSymbol;
+                        symbolSpan.style.color = "red"; // optional
+                    }
+                    console.log('Failure:', response, " - provided data:", requiredData);
                 }
             });
         });
@@ -62,29 +82,33 @@
         @await Html.PartialAsync("_InvestmentTablePartial", Model)
     </div>
 
-    <div id="add-investment-modal">
-        <h2>Add investment</h2>
-        <div class="data-container">
-            <label for="name">Symbol:</label><br>
-            <input type="text" id="symbol" name="symbol" value="NVDA">
-        </div>
-
-        <div class="data-container">
-            <label for="quantity">Quantity:</label>
-            <input type="number" step="any" min="0" id="quantity" name="quantity" value="5" />
-        </div>
-
-        <div class="data-container">
-            <label asp-for="InvestmentTypeToAdd" class="col-md-2 control-label">Type:</label>
-            <select id="investmentType" name="Type"
-                    asp-for="InvestmentTypeToAdd"
-                    asp-items="Html.GetEnumSelectList<InvestmentType>()">
-            </select>
-        </div>
-
-        <button id="confirm-investment-button">Confirm</button>
-    </div>
+    <button id="remove-investment-button">Remove selected investment</button>
+    <button id="add-investment-button">Add investment</button>
 </div>
 
-<button id="remove-investment-button">Remove selected investment</button>
-<button id="add-investment-button">Add investment</button>
+<div id="add-investment-modal">
+    <h2>Add investment</h2>
+    <div class="data-container">
+        <label for="name">Symbol:</label><br>
+        <input type="text" id="symbol" name="symbol" value="NVDA">
+    </div>
+
+    <div class="data-container">
+        <label for="quantity">Quantity:</label>
+        <input type="number" step="any" min="0" id="quantity" name="quantity" value="5" />
+    </div>
+
+    <div class="data-container">
+        <label asp-for="InvestmentTypeToAdd" class="col-md-2 control-label">Type:</label>
+        <select id="investmentType" name="Type"
+                asp-for="InvestmentTypeToAdd"
+                asp-items="Html.GetEnumSelectList<InvestmentType>()">
+        </select>
+    </div>
+
+    <div id="modal-buttons">
+        <button id="cancel-investment-button">Cancel</button>
+        <button id="confirm-investment-button">Confirm</button>
+    </div>
+    <p id="error-content"></p>
+</div>

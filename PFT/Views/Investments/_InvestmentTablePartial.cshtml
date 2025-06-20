@@ -28,6 +28,12 @@
                 </thead>
                     @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
                     {
+                        if (string.IsNullOrEmpty(entry.Value.StockData.Name))
+                        {
+                        <td>Exceeded API calls. Try again later.</td>
+                            continue;
+                        }
+
                         if (entry.Value.CachedData.Type != InvestmentType.ETF)
                             continue;
 
@@ -67,9 +73,9 @@
                     <th>Symbol</th>
                     <th>Amount held</th>
                     <th>Current total value</th>
+                    <th>Current price</th>
                     <th>Percentual change</th>
                     <th>Absolute change</th>
-                    <th>Current price</th>
                 </tr>
             </thead>
                 @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
@@ -91,9 +97,9 @@
                     <td>@stockData.Symbol</td>
                     <td>@entry.Value.CachedData.Quantity</td>
                     <td>@entry.Value.CalculateValue() @stockData.Currency</td>
+                    <td>@stockData.Close @stockData.Currency</td>
                     <td class="@changeClass">@Math.Round(stockData.PercentChange, 4)%</td>
                     <td class="@changeClass">@Math.Round(stockData.Change, 4)</td>
-                    <td>@stockData.Close @stockData.Currency</td>
                 </tr>
                 }
             }

@@ -2,6 +2,14 @@
     color:white;
 }
 
+.content{
+    transition:filter 0.3s ease;
+}
+
+.blur{
+    filter: blur(10px);
+}
+
 #general-information{
     display:flex;
     justify-content: space-between;
@@ -55,17 +63,17 @@ button{
 }
 
 #add-investment-modal {
-    position: relative;
-    display: flex;
+    position: absolute;
+    display: none;
     width: 20vw;
-    top:0%;
-    left:1%;
-    margin-bottom:20px;
+    top: 30%;
+    left: 35%;
+    margin-bottom: 20px;
     background: #ade8f4;
     border-radius: 20px;
-    transform-origin:center;
+    transform-origin: center;
     flex-direction: column;
-    align-items:center;
+    align-items: center;
 }
 
 .data-container{
@@ -76,9 +84,34 @@ button{
 
 .data-container > * {
     padding:0;
-    margin:0;
 }
 
-#confirm-investment-button{
-    margin:20px;
+#modal-buttons {
+    display:flex;
+    padding:1vh 0vw;
+}
+
+#modal-buttons > * {
+    margin:0vh 1vw;
+}
+
+input, label {
+    margin:0.5vh 0vw;
+}
+
+#error-content{
+    width:100%;
+    height:auto;
+    text-align:center;
+    padding:1vh 1vw;
+}
+
+#error-content > * {
+    margin: 0;
+    padding:0;
+    width:fit-content;
+}
+
+#error-message-symbol{
+    color:red;
 }
