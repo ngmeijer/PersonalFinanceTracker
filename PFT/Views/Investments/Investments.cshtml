@@ -3,132 +3,19 @@
 }
 
 @model InvestmentsModel
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
 
 @section Scripts {
-    <script>
-        $("#refresh-investments-button").click(function () {
-            $.ajax({
-                url: '@Url.Action("RefreshData", "Investments")',
-                type: 'POST',
-                success: function (html) {
-                    $("#investments-container").html(html);
-                }
-            });
-        });
-
-        const contentBehindModal = document.getElementsByClassName('content')[0];
-        const errorText = document.getElementById('error-content');
-
-        //Modals
-        const addInvestmentModal = document.getElementById("add-investment-modal");
-        const removeInvestmentModal = document.getElementById("remove-investment-modal");
-        const changeQuantityModal = document.getElementById("change-quantity-investment-modal");
-
-        //Adding investment
-        const addInvestmentButton = document.getElementById("add-investment-button");
-        const confirmInvestmentButton = document.getElementById("confirm-add-investment-button");
-        const cancelAddInvestmentButton = document.getElementById("cancel-add-investment-button");
-
-        //Remove investment
-        const removeInvestmentButton = document.getElementById("remove-investment-button");
-        const confirmRemoveInvestmentButton = document.getElementById("confirm-remove-investment-button");
-        const cancelRemoveInvestmentButton = document.getElementById("cancel-remove-investment-button");
-
-        //Change quantity
-        const changeQuantityButton = document.getElementById("change-quantity-button");
-        const confirmQuantityButton = document.getElementById("confirm-quantity-investment-button");
-        const cancelQuantityButton = document.getElementById("cancel-quantity-investment-button");
-
-        //Cancel add
-        cancelAddInvestmentButton.onclick = function () {
-            addInvestmentModal.style.display = "none";
-            contentBehindModal.classList.remove("blur");
-            errorText.style.display = 'none';
-            errorText.innerHTML = "";
-        }
-
-        //Cancel remove
-        cancelRemoveInvestmentButton.onclick = function () {
-            removeInvestmentModal.style.display = "none";
-            contentBehindModal.classList.remove("blur");
-        }
-
-        //Cancel change quantity
-        cancelQuantityButton.onclick = function () {
-            changeQuantityModal.style.display = "none";
-            contentBehindModal.classList.remove("blur");
-        }
-
-        /////Enable investment modals
-        addInvestmentButton.onclick = function () {
-            addInvestmentModal.style.display = "flex";
-            contentBehindModal.classList.add('blur');
-        }
-
-        removeInvestmentButton.onclick = function () {
-            removeInvestmentModal.style.display = "flex";
-            contentBehindModal.classList.add('blur');
-        }
-
-        changeQuantityButton.onclick = function () {
-            changeQuantityModal.style.display = "flex";
-            contentBehindModal.classList.add('blur');
-        }
-
-        $("#confirm-investment-button").click(function () {
-            var givenSymbol = $('#symbol').val();
-            var givenQuantity = $('#quantity').val();
-            var givenType = $('#investmentType').val();
-            var requiredData = {
-                Symbol: givenSymbol,
-                Quantity: givenQuantity,
-                Type: givenType
-            };
-
-            $.ajax({
-                url: '@Url.Action("AddInvestment", "Investments")',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(requiredData),
-                success: function (response) {
-                    console.log('Success:', response)
-                    investmentModal.style.display = "none";
-                    contentBehindModal.classList.remove('blur');
-
-                    errorText.style.display = 'none';
-                    errorText.innerHTML = "";
-                },
-                error: function (response) {
-                    errorText.style.display = 'block';
-                    var errorMessage = "An error occured. Please check if the symbol: ";
-                    console.log("Error text reference: ", errorText);
-                    errorText.innerHTML = 'An error occurred. Please check if the symbol: <span id="error-message-symbol"></span> is valid.';
-                    const symbolSpan = document.getElementById('error-message-symbol');
-                    if (symbolSpan) {
-                        symbolSpan.textContent = givenSymbol;
-                        symbolSpan.style.color = "red";
-                    }
-                    console.log('Failure:', response, " - provided data:", requiredData);
-                }
-            });
-        });
-
-        $(".investment-table tr").click(function () {
-            $(".investment-table").not($(this).closest("table")).find("tr").removeClass("selected-investment");
-            $(this).addClass('selected-investment').siblings().removeClass('selected-investment');
-            var value = $(this).find('td:first').html();
-        });
-
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/Investments.js"></script>
 }
 
 <div class="content">
     <h1 class="display-4">Investments</h1>
     <button id="refresh-investments-button">Refresh</button>
 
-    <div id="investments-container">
+    <div id="investments-tables-container" data-refresh-url="@Url.Action("RefreshData", "Investments")">
         @await Html.PartialAsync("_InvestmentTablePartial", Model)
     </div>
 
@@ -137,18 +24,17 @@
     <button id="change-quantity-button">Change quantity</button>
 </div>
 
-<div id="add-investment-modal" class="investment-action-modal">
+<<!-- Add Modal -->
+<div class="investment-action-modal" data-modal="add">
     <h2>Add investment</h2>
     <div class="data-container">
-        <label for="name">Symbol:</label><br>
+        <label for="symbol">Symbol:</label>
         <input type="text" id="symbol" name="symbol" value="NVDA">
     </div>
-
     <div class="data-container">
         <label for="quantity">Quantity:</label>
         <input type="number" step="any" min="0" id="quantity" name="quantity" value="5" />
     </div>
-
     <div class="data-container">
         <label asp-for="InvestmentTypeToAdd" class="col-md-2 control-label">Type:</label>
         <select id="investmentType" name="Type"
@@ -156,34 +42,31 @@
                 asp-items="Html.GetEnumSelectList<InvestmentType>()">
         </select>
     </div>
-
     <div class="modal-buttons">
-        <button id="cancel-add-investment-button">Cancel</button>
-        <button id="confirm-add-investment-button">Confirm</button>
+        <button class="cancel-button" data-modal="add">Cancel</button>
+        <button class="confirm-button" data-modal="add">Confirm</button>
     </div>
-    <p id="error-content"></p>
 </div>
 
-<div id="remove-investment-modal" class="investment-action-modal">
+<!-- Remove Modal -->
+<div class="investment-action-modal" data-modal="remove">
     <h2>Remove investment</h2>
     <p>Are you sure you want to remove this investment?</p>
-
     <div class="modal-buttons">
-        <button id="cancel-remove-investment-button">Cancel</button>
-        <button id="confirm-remove-investment-button">Confirm</button>
+        <button class="cancel-button" data-modal="remove">Cancel</button>
+        <button class="confirm-button" data-modal="remove">Confirm</button>
     </div>
 </div>
 
-<div id="change-quantity-investment-modal" class="investment-action-modal">
+<!-- Change Quantity Modal -->
+<div class="investment-action-modal" data-modal="change">
     <h2>Change quantity</h2>
-    <p>How many units do you own now?</p>
     <div class="data-container">
         <label for="quantity">Quantity:</label>
-        <input type="number" step="any" min="0" id="quantity" name="quantity" value="5" />
+        <input type="number" id="change-quantity" step="any" min="0" value="5">
     </div>
-
     <div class="modal-buttons">
-        <button id="cancel-quantity-investment-button">Cancel</button>
-        <button id="confirm-quantity-investment-button">Confirm</button>
+        <button class="cancel-button" data-modal="change">Cancel</button>
+        <button class="confirm-button" data-modal="change">Confirm</button>
     </div>
 </div>
