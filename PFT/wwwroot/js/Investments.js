@@ -1,8 +1,4 @@
-﻿function getPageContent() {
-    return document.querySelector('.content');
-}
-
-$("#refresh-investments-button").click(function () {
+﻿$("#refresh-investments-button").click(function () {
     const container = document.querySelector("#investments-tables-container");
     const refreshUrl = container.dataset.refreshUrl;
 

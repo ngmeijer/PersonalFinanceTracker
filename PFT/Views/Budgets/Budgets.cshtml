@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "PFT - Budgets";
+}
+
+@model BudgetsModel
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/Budgets.js"></script>
+}
+
+<div class="content">
+    <h1 class="display-4">Budgets</h1>
+
+    <button id="add-budget-button">Create new budget</button>
+    <button id="remove-budget-button">Remove budget</button>
+    <button id="change-budget-button">Change budget</button>
+
+</div>
+
+<div class="budget-action-modal" data-modal="add">
+    <h2>Add budget</h2>
+    <div class="data-container">
+        <label for="symbol">Symbol:</label>
+        <input type="text" id="symbol" name="budgetName" value="Groceries">
+    </div>
+    <div class="data-container">
+        <label for="amount">Amount:</label>
+        <input type="number" step="any" min="0" id="amount" name="amount" value=300" />
+    </div>
+    <div class="modal-buttons">
+        <button class="cancel-button" data-modal="add">Cancel</button>
+        <button class="confirm-button" data-modal="add">Confirm</button>
+    </div>
+</div>
+
+<!-- Remove Modal -->
+<div class="budget-action-modal" data-modal="remove">
+    <h2>Remove budget</h2>
+    <p>Are you sure you want to remove this budget?</p>
+    <div class="modal-buttons">
+        <button class="cancel-button" data-modal="remove">Cancel</button>
+        <button class="confirm-button" data-modal="remove">Confirm</button>
+    </div>
+</div>
+
+<!-- Change Quantity Modal -->
+<div class="budget-action-modal" data-modal="change">
+    <h2>Change amount</h2>
+    <div class="data-container">
+        <label for="quantity">Amount:</label>
+        <input type="number" id="change-amount" step="any" min="0" value="300">
+    </div>
+    <div class="modal-buttons">
+        <button class="cancel-button" data-modal="change">Cancel</button>
+        <button class="confirm-button" data-modal="change">Confirm</button>
+    </div>
+</div>
