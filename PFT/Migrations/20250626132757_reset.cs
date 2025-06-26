@@ -5,7 +5,7 @@
 namespace PFT.Migrations
 {
     /// <inheritdoc />
-    public partial class RenameAmountHeldToQuantity : Migration
+    public partial class reset : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

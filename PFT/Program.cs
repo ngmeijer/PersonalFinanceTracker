@@ -1,27 +1,38 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PFT.Data;
-using PFT.Repositories;
-using PFT.Services;
+using PFT.Identity;
+using PFT.Repositories.Investments;
+using PFT.Services.Investments;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<PFTContext>();
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddScoped<IInvestmentService, InvestmentService>();
-builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
-
+//Set up database connection
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<PFTContext>(options => {
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddRazorPages();
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//Set up user registering functionality
+builder.Services.AddDefaultIdentity<PFTUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<PFTContext>();
+
+
+
+//Set up services and repositories
+builder.Services.AddScoped<IInvestmentService, InvestmentService>();
+builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
+
+
+//Initialize controllers with views
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+
+var app = builder.Build(); 
+
+// Configure the HTTP request pipeline. 
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();

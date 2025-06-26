@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PFT.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using PFT.Identity;
+using PFT.Models.Investments;
 
 namespace PFT.Data
 {
-    public class PFTContext : DbContext
+    public class PFTContext : IdentityDbContext<PFTUser>
     {
         public DbSet<Investment> Investments { get; set; }
 
@@ -12,7 +15,7 @@ namespace PFT.Data
 
         }
 
-        public PFTContext(DbContextOptions options) : base(options)
+        public PFTContext(DbContextOptions<PFTContext> options) : base(options)
         {
             
         }
