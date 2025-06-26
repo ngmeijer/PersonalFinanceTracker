@@ -1,10 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using PFT.Data;
-using PFT.Models;
+using PFT.Models.Investments;
 using System.Data;
 
-namespace PFT.Repositories
+namespace PFT.Repositories.Investments
 {
     public class InvestmentRepository : IInvestmentRepository
     {

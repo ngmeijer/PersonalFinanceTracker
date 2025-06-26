@@ -55,6 +55,9 @@ document.querySelectorAll('.confirm-button').forEach(button => {
     })
 });
 
+const addInvestmentModal = document.querySelector(`.investment-action-modal[data-modal="add"]`);
+const errorText = addInvestmentModal.querySelector('.error-content');
+
 function handleAddInvestment() {
     var givenSymbol = $('#symbol').val();
     var givenQuantity = $('#quantity').val();
@@ -66,27 +69,29 @@ function handleAddInvestment() {
     };
 
     $.ajax({
-        url: '@Url.Action("AddInvestment", "Investments")',
+        url: addInvestmentUrl,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(requiredData),
         success: function (response) {
             console.log('Success:', response)
-            investmentModal.style.display = "none";
+            addInvestmentModal.style.display = "none";
             getPageContent().classList.remove('blur');
 
-            errorText.style.display = 'none';
-            errorText.innerHTML = "";
+            if (errorText) {
+                errorText.style.display = 'none';
+                errorText.innerHTML = "";
+            }
         },
         error: function (response) {
-            errorText.style.display = 'block';
-            var errorMessage = "An error occured. Please check if the symbol: ";
-            console.log("Error text reference: ", errorText);
-            errorText.innerHTML = 'An error occurred. Please check if the symbol: <span id="error-message-symbol"></span> is valid.';
-            const symbolSpan = document.getElementById('error-message-symbol');
-            if (symbolSpan) {
-                symbolSpan.textContent = givenSymbol;
-                symbolSpan.style.color = "red";
+            if (errorText) {
+                errorText.style.display = 'block';
+                errorText.innerHTML = 'An error occurred. Please check if the symbol: <span id="error-message-symbol"></span> is valid.';
+                const symbolSpan = document.getElementById('error-message-symbol');
+                if (symbolSpan) {
+                    symbolSpan.textContent = givenSymbol;
+                    symbolSpan.style.color = "red";
+                }
             }
             console.log('Failure:', response, " - provided data:", requiredData);
         }

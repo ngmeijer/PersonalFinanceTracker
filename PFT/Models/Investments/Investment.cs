@@ -1,6 +1,6 @@
 ﻿using TwelveDataSharp.Library.ResponseModels;
 
-namespace PFT.Models
+namespace PFT.Models.Investments
 {
     /// <summary>
     /// Investment model containing all data needed to display in the View. Data is retrieved from the TwelveData stock API.
@@ -13,12 +13,12 @@ namespace PFT.Models
         public float Quantity { get; set; }
     }
 
-    public partial class InvestmentWrapper
+    public class InvestmentWrapper
     {
         public Investment CachedData { get; set; }
         public TwelveDataQuote StockData { get; set; }
 
-        public float PercentageOfTotalValue {  get; set; }
+        public float PercentageOfTotalValue { get; set; }
 
         public float CalculateValue()
         {

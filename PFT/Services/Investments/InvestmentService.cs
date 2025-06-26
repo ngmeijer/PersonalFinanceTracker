@@ -1,11 +1,12 @@
-﻿using PFT.Models;
-using PFT.Repositories;
+﻿using PFT.Models.Investments;
+using PFT.Repositories.Investments;
+using PFT.Utilities;
 using System.Net.Http;
 using TwelveDataSharp;
 using TwelveDataSharp.Interfaces;
 using TwelveDataSharp.Library.ResponseModels;
 
-namespace PFT.Services
+namespace PFT.Services.Investments
 {
     /// <summary>
     /// InvestmentService is meant to retrieve data from APIs - business logic.
@@ -16,7 +17,7 @@ namespace PFT.Services
         private HttpClient _httpClient;
         private ITwelveDataClient _twelveDataClient;
 
-        public InvestmentService(IInvestmentRepository repo) 
+        public InvestmentService(IInvestmentRepository repo)
         {
             _repository = repo;
             _httpClient = new HttpClient();
@@ -120,7 +121,7 @@ namespace PFT.Services
             {
                 Symbol = data.Symbol,
                 Quantity = request.Quantity,
-                Type = (InvestmentType)request.Type
+                Type = request.Type
             };
 
             await _repository.ChangeInvestmentQuantityAsync(investmentData);

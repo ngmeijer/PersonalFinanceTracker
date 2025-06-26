@@ -1,4 +1,4 @@
-﻿namespace PFT.Models
+﻿namespace PFT.Models.Investments
 {
     public class InvestmentsModel
     {
@@ -8,16 +8,16 @@
 
         public Dictionary<string, InvestmentWrapper> GetInvestments() => Investments;
 
-        public float GetPortfolioValue() 
+        public float GetPortfolioValue()
         {
             float portfolioValue = 0;
-            foreach(var item in Investments)
+            foreach (var item in Investments)
             {
                 portfolioValue += item.Value.CalculateValue();
             }
 
             return portfolioValue;
-         }
+        }
     }
 
     public enum InvestmentType

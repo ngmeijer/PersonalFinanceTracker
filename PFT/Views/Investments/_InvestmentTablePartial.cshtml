@@ -1,4 +1,4 @@
-﻿@model InvestmentsModel
+﻿@model PFT.Models.Investments.InvestmentsModel
 
 <div id="main-content">
     <div id="general-information">
@@ -26,7 +26,7 @@
                         <th>Absolute change</th>
                     </tr>
                 </thead>
-                    @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
+                    @foreach (KeyValuePair<string, PFT.Models.Investments.InvestmentWrapper> entry in Model.GetInvestments())
                     {
                         if (string.IsNullOrEmpty(entry.Value.StockData.Name))
                         {
@@ -34,7 +34,7 @@
                             continue;
                         }
 
-                        if (entry.Value.CachedData.Type != InvestmentType.ETF)
+                        if (entry.Value.CachedData.Type != PFT.Models.Investments.InvestmentType.ETF)
                             continue;
 
                         var stockData = entry.Value.StockData;
@@ -78,7 +78,7 @@
                     <th>Absolute change</th>
                 </tr>
             </thead>
-                @foreach (KeyValuePair<string, InvestmentWrapper> entry in Model.GetInvestments())
+                @foreach (KeyValuePair<string, PFT.Models.Investments.InvestmentWrapper> entry in Model.GetInvestments())
                 {
                     if (string.IsNullOrEmpty(entry.Value.StockData.Name))
                     {
@@ -86,7 +86,7 @@
                         continue;
                     }
 
-                    if (entry.Value.CachedData.Type != InvestmentType.Stock)
+                    if (entry.Value.CachedData.Type != PFT.Models.Investments.InvestmentType.Stock)
                         continue;
 
                     var stockData = entry.Value.StockData;

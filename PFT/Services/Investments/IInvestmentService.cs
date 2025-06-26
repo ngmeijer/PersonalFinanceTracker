@@ -1,6 +1,7 @@
-﻿using PFT.Models;
+﻿using PFT.Models.Investments;
+using PFT.Utilities;
 
-namespace PFT.Services
+namespace PFT.Services.Investments
 {
     public interface IInvestmentService
     {
@@ -8,5 +9,5 @@ namespace PFT.Services
         Task<ServiceResult> RemoveInvestmentAsync(string symbol);
         Task<ServiceResult> AdjustInvestmentQuantityAsync(Investment investment);
         Task<Dictionary<string, InvestmentWrapper>> RefreshData();
-     }
+    }
 }

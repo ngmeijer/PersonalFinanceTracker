@@ -2,12 +2,15 @@
     ViewData["Title"] = "PFT - Investments";
 }
 
-@model InvestmentsModel
+@model PFT.Models.Investments.InvestmentsModel
 
 @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const addInvestmentUrl = '@Url.Action("AddInvestment", "Investments")';
+     </script>
     <script src="~/js/Investments.js"></script>
 }
 
@@ -39,7 +42,7 @@
         <label asp-for="InvestmentTypeToAdd" class="col-md-2 control-label">Type:</label>
         <select id="investmentType" name="Type"
                 asp-for="InvestmentTypeToAdd"
-                asp-items="Html.GetEnumSelectList<InvestmentType>()">
+                asp-items="Html.GetEnumSelectList<PFT.Models.Investments.InvestmentType>()">
         </select>
     </div>
     <div class="modal-buttons">
