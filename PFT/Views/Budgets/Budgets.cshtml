@@ -2,9 +2,13 @@
     ViewData["Title"] = "PFT - Budgets";
 }
 
-@model BudgetsModel
+@model PFT.Models.Budgets.BudgetsModel
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const addBudgetUrl = '@Url.Action("AddBudget", "Budgets")';
+    </script>
     <script src="~/js/Budgets.js"></script>
 }
 
@@ -14,19 +18,32 @@
     <button id="add-budget-button">Create new budget</button>
     <button id="remove-budget-button">Remove budget</button>
     <button id="change-budget-button">Change budget</button>
-
 </div>
 
 <div class="budget-action-modal" data-modal="add">
     <h2>Add budget</h2>
     <div class="data-container">
-        <label for="symbol">Symbol:</label>
-        <input type="text" id="symbol" name="budgetName" value="Groceries">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="budgetName" value="Groceries">
     </div>
+
     <div class="data-container">
-        <label for="amount">Amount:</label>
-        <input type="number" step="any" min="0" id="amount" name="amount" value=300" />
+        <label for="quantity">Amount:</label>
+        <div class="currency-input">
+            <span>€</span>
+            <input type="number" step="any" min="0" id="amount" name="amount" value="200" />
+        </div>
     </div>
+
+    <div class="data-container">
+        <label asp-for="TimeframeToAdd" class="col-md-2 control-label">Type:</label>
+        <select id="timeframe" name="Type"
+                asp-for="TimeframeToAdd"
+                asp-items="Html.GetEnumSelectList<PFT.Models.Budgets.Timeframe>()">
+        </select>
+    </div>
+
+    
     <div class="modal-buttons">
         <button class="cancel-button" data-modal="add">Cancel</button>
         <button class="confirm-button" data-modal="add">Confirm</button>

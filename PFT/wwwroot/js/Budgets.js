@@ -23,3 +23,56 @@ document.querySelectorAll('.cancel-button').forEach(button => {
         }
     });
 });
+
+document.querySelectorAll('.confirm-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const modalType = button.dataset.modal;
+
+        switch (modalType) {
+            case 'add':
+                handleAddBudget();
+                break;
+            case 'remove':
+                handleRemoveBudget();
+                break;
+            case 'change':
+                handleChangeBudget();
+                break;
+        }
+    })
+});
+
+const addBudgetModal = document.querySelector(`.budget-action-modal[data-modal="add"]`);
+const errorText = addBudgetModal.querySelector('.error-content');
+
+function handleAddBudget() {
+    var givenName = $('#name').val();
+    var givenAmount = $('#amount').val();
+    var givenTimeframe = $('#timeframe').val();
+    var requiredData = {
+        Name: givenName,
+        Amount: givenAmount,
+        Timeframe: givenTimeframe
+    };
+
+    $.ajax({
+        url: addBudgetUrl,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(requiredData),
+        success: function (response) {
+            console.log('Success:', response)
+            addBudgetModal.style.display = "none";
+            getPageContent().classList.remove('blur');
+
+            if (errorText) {
+                errorText.style.display = 'none';
+                errorText.innerHTML = "";
+            }
+        },
+        error: function (response) {
+            
+            console.log('Failure:', response, " - provided data:", requiredData);
+        }
+    });
+}

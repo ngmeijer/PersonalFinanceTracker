@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PFT.Data;
 using PFT.Identity;
+using PFT.Repositories.Budgets;
 using PFT.Repositories.Investments;
+using PFT.Services.Budgets;
 using PFT.Services.Investments;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +21,12 @@ builder.Services.AddDefaultIdentity<PFTUser>(options => options.SignIn.RequireCo
     .AddEntityFrameworkStores<PFTContext>();
 
 
-
 //Set up services and repositories
 builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
+
+builder.Services.AddScoped<IBudgetService, BudgetService>();
+builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
 
 
 //Initialize controllers with views

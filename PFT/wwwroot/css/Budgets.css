@@ -31,3 +31,34 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+.data-container > input{
+    border:none;
+}
+
+.budget-action-modal > h2 {
+    color: black;
+}
+
+.currency-input {
+    display: flex;
+    align-items: center;
+}
+
+    .currency-input span {
+        height:100%;
+        padding: 0 4px;
+        background-color: #ade8f4;
+        border-right: none;
+        font-size: 1.2rem;
+    }
+
+    .currency-input input {
+        height:100%;
+        border: 1px solid #ccc;
+        border-left: none;
+        border-radius: 0 4px 4px 0;
+        padding: 6px;
+        font-size: 1rem;
+        width: 100%;
+    }
