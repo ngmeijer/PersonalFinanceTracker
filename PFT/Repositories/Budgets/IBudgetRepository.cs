@@ -10,6 +10,6 @@ namespace PFT.Repositories.Budgets
         Task RemoveBudgetAsync(string symbol);
         Task ChangeBudgetAmountAsync(Budget budget);
 
-        Task<Dictionary<string, InvestmentWrapper>> GetAllBudgetsAsync();
+        Task<Dictionary<string, Budget>> GetAllBudgetsAsync();
     }
 }

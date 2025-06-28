@@ -1,6 +1,23 @@
 ﻿body {
 }
 
+.budget-instance {
+    background:red;
+    width:40vw;
+}
+
+.budget-instance > progress {
+    margin:1vh 2vw;
+    width:90%;
+    height:3vh;
+}
+
+.budget-instance > .budget-data{
+    padding:0.5vh 1vw;
+    display:flex;
+    justify-content:space-between;
+}
+
 .budget-action-modal {
     position: absolute;
     display: none;

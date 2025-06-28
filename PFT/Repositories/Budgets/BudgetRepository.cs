@@ -40,13 +40,14 @@ namespace PFT.Repositories.Budgets
                 };
             }
 
-            SqlCommand command = new SqlCommand(@"INSERT INTO Budgets (Name, Interval, Amount) VALUES (@name, @interval, @amount)", connection);
+            SqlCommand command = new SqlCommand(@"INSERT INTO Budgets (Name, Interval, MaxAmount, CurrentlySpent) VALUES (@name, @interval, @maxAmount, @currentlySpent)", connection);
 
             //TODO check double names from being entered.
 
             command.Parameters.AddWithValue("@name", budget.Name);
             command.Parameters.AddWithValue("@interval", budget.Interval);
-            command.Parameters.AddWithValue("@amount", budget.Amount);
+            command.Parameters.AddWithValue("@maxAmount", budget.MaxAmount);
+            command.Parameters.AddWithValue("@currentlySpent", budget.CurrentlySpent);
 
             var result = await command.ExecuteNonQueryAsync();
 
@@ -71,7 +72,7 @@ namespace PFT.Repositories.Budgets
             throw new NotImplementedException();
         }
 
-        public Task<Dictionary<string, InvestmentWrapper>> GetAllBudgetsAsync()
+        public Task<Dictionary<string, Budget>> GetAllBudgetsAsync()
         {
             throw new NotImplementedException();
         }

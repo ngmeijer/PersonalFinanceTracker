@@ -30,7 +30,14 @@ namespace PFT.Controllers
         {
             if(request == null)
             {
-                return BadRequest("No data received.");
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(string.Join(" | ", errors));
+                }
             }
 
             try
@@ -47,6 +54,14 @@ namespace PFT.Controllers
             {
                 return StatusCode(500, $"An unexpected error occured here: {ex.Message}");
             }
+        }
+
+        [HttpPost]
+        public async Task<PartialViewResult> RefreshData()
+        {
+            _model.SetAllBudgetData(await _service.RefreshData());
+
+            return PartialView("_BudgetsViewPartial", _model);
         }
     }
 }

@@ -9,6 +9,6 @@ namespace PFT.Services.Budgets
         Task<ServiceResult> AddBudgetAsync(BudgetRequest request);
         Task<ServiceResult> RemoveBudgetAsync(string name);
         Task<ServiceResult> AdjustBudgetAmountAsync(Budget budget);
-        Task<Dictionary<string, InvestmentWrapper>> RefreshData();
+        Task<Dictionary<string, Budget>> RefreshData();
     }
 }

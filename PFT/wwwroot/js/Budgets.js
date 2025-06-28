@@ -47,12 +47,12 @@ const errorText = addBudgetModal.querySelector('.error-content');
 
 function handleAddBudget() {
     var givenName = $('#name').val();
-    var givenAmount = $('#amount').val();
-    var givenTimeframe = $('#timeframe').val();
+    var givenAmount = parseInt($('#amount').val(), 10);
+    var givenTimeframe = parseInt($('#timeframe').val(), 10);
     var requiredData = {
         Name: givenName,
         Amount: givenAmount,
-        Timeframe: givenTimeframe
+        Timeframe: givenTimeframe,
     };
 
     $.ajax({
@@ -71,8 +71,7 @@ function handleAddBudget() {
             }
         },
         error: function (response) {
-            
-            console.log('Failure:', response, " - provided data:", requiredData);
+            console.log('Failure:', response, " - provided data:", requiredData, " - stringified data:", JSON.stringify(requiredData));
         }
     });
 }

@@ -15,17 +15,22 @@
 <div class="content">
     <h1 class="display-4">Budgets</h1>
 
+    <div id="budgets-container" data-refresh-url="@Url.Action("RefreshData", "Budgets")">
+        @await Html.PartialAsync("_BudgetsViewPartial", Model)
+    </div>
+
     <button id="add-budget-button">Create new budget</button>
     <button id="remove-budget-button">Remove budget</button>
     <button id="change-budget-button">Change budget</button>
 </div>
 
+<!-- Add Modal -->
 <div class="budget-action-modal" data-modal="add">
     <h2>Add budget</h2>
     <div class="data-container">
         <label for="name">Name:</label>
         <input type="text" id="name" name="budgetName" value="Groceries">
-    </div>
+    </div> 
 
     <div class="data-container">
         <label for="quantity">Amount:</label>

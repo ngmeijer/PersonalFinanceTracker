@@ -28,7 +28,9 @@ namespace PFT.Services.Budgets
             Budget budgetData = new Budget()
             {
                 Name = request.Name,
-                Amount = request.Amount,
+                MaxAmount = request.Amount,
+                Interval = (Timeframe)request.Timeframe,
+                CurrentlySpent = 50,
             };
 
             await _repository.AddBudgetAsync(budgetData);
@@ -44,14 +46,16 @@ namespace PFT.Services.Budgets
             throw new NotImplementedException();
         }
 
-        public Task<Dictionary<string, InvestmentWrapper>> RefreshData()
+        public Task<ServiceResult> RemoveBudgetAsync(string name)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult> RemoveBudgetAsync(string name)
+        public async Task<Dictionary<string, Budget>> RefreshData()
         {
-            throw new NotImplementedException();
+            Dictionary<string, Budget> budgetCollection = await _repository.GetAllBudgetsAsync();
+
+            return budgetCollection;
         }
     }
 }
