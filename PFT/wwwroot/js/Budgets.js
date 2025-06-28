@@ -1,4 +1,18 @@
-﻿//Enables the proper modal
+﻿$("#refresh-budgets-button").click(function () {
+    const container = document.querySelector("#budgets-container");
+    const refreshUrl = container.dataset.refreshUrl;
+
+    $.ajax({
+        url: refreshUrl,
+        type: 'POST',
+        success: function (html) {
+            $(container).html(html);
+        }
+    });
+});
+
+
+//Enables the proper modal
 document.querySelectorAll('[id$="-budget-button"').forEach(button => {
     button.addEventListener('click', () => {
         const modalType = button.id.split('-')[0];

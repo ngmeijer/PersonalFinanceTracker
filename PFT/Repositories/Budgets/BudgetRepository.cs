@@ -2,6 +2,7 @@
 using PFT.Models.Budgets;
 using PFT.Models.Investments;
 using PFT.Utilities;
+using System.Data;
 
 namespace PFT.Repositories.Budgets
 {
@@ -72,9 +73,33 @@ namespace PFT.Repositories.Budgets
             throw new NotImplementedException();
         }
 
-        public Task<Dictionary<string, Budget>> GetAllBudgetsAsync()
+        public async Task<Dictionary<string, Budget>> GetAllBudgetsAsync()
         {
-            throw new NotImplementedException();
+            Dictionary<string, Budget> data = new();
+
+            using var connection = new SqlConnection(_connectionString);
+
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand("SELECT Name, Interval, MaxAmount, CurrentlySpent FROM Budgets", connection);
+            using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                string name = reader.GetString("Name");
+                if (data.ContainsKey(name))
+                    continue;
+
+                data.Add(name, new Budget
+                {
+                    Name = reader.GetString("Name"),
+                    MaxAmount = reader.GetInt32("MaxAmount"),
+                    CurrentlySpent = reader.GetInt32("CurrentlySpent"),
+                    Interval = (Timeframe)reader.GetInt32("Interval"),
+                });;
+            }
+
+            return data;
         }
 
         public Task RemoveBudgetAsync(string symbol)

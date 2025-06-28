@@ -22,6 +22,8 @@ namespace PFT.Controllers
 
         public async Task<IActionResult> Budgets()
         {
+            await RefreshData();
+
             return View(_model);
         }
 
@@ -47,6 +49,8 @@ namespace PFT.Controllers
                 {
                     return BadRequest(result.Message);
                 }
+
+                await RefreshData();
 
                 return Ok(new { dataReceived = result.Message });
             }
