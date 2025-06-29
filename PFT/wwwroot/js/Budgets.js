@@ -89,3 +89,15 @@ function handleAddBudget() {
         }
     });
 }
+
+var currentlySelectedStock = null;
+var amountOfSelectedStock = 0;
+$(".budget-instance").click(function () {
+    $(".budget-instance").not(this).removeClass("selected-budget");
+    $(this).addClass('selected-budget');
+    //var symbol = $(this).find('td').eq(1).html();
+    //currentlySelectedStock = symbol;
+
+    //var amount = $(this).find('td').eq(2).html();
+    //amountOfSelectedStock = amount;
+});

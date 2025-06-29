@@ -1,12 +1,36 @@
 ﻿body {
 }
 
+.main-content {
+    display:flex;
+    justify-content:space-between;
+}
+
+#total-budget-text{
+    color:white;
+}
+
+#budget-instances-list {
+}
+
 .budget-instance {
-    background: #ade8f4;
+    background: #284B63;
     border-radius: 20px;
     width: 40vw;
+    max-height: 10vh;
     margin: 1vh 1vw;
-    color: black;
+}
+
+.selected-budget {
+    background-color: #48cae4;
+}
+
+.budget-data > h2 {
+    color: white;
+}
+
+.budget-data > span{
+    color:white;
 }
 
 .budget-instance > progress {
@@ -15,7 +39,7 @@
     height:3vh;
 }
 
-.budget-instance > .budget-data{
+.budget-data{
     padding:0.5vh 1vw;
     display:flex;
     justify-content:space-between;
@@ -82,3 +106,9 @@
         font-size: 1rem;
         width: 100%;
     }
+
+
+#budgets-chart{
+    width:30%;
+    height:auto;
+}

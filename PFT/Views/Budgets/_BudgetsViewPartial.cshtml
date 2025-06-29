@@ -1,31 +1,39 @@
 ﻿@model PFT.Models.Budgets.BudgetsModel
 
-<div class="main-content">
-    @foreach(KeyValuePair<string, PFT.Models.Budgets.Budget> entry in Model.GetBudgets())
-    {
-        var budgetName = entry.Value.Name;
-        var budgetAmount = entry.Value.MaxAmount;
-        var timeframe = "";
-        var percentageSpent = entry.Value.CalculatePercentageSpent();
-        switch (entry.Value.Interval)
-        {
-            case PFT.Models.Budgets.Timeframe.Weekly:
-                timeframe = "per week";
-                break;
-            case PFT.Models.Budgets.Timeframe.Monthly:
-                timeframe = "per month";
-                break;
-            case PFT.Models.Budgets.Timeframe.Yearly:
-                timeframe = "per year";
-                break;
-        }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <div class="budget-instance">
-            <div class="budget-data">
-                <h2>@budgetName</h2>
-                <h3><span>€@budgetAmount</span><span> @timeframe</span></h3>
+<div class="main-content">
+    <div id="budgets-chart">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div id="budget-instances-list">
+        @foreach (KeyValuePair<string, PFT.Models.Budgets.Budget> entry in Model.GetBudgets())
+        {
+            var budgetName = entry.Value.Name;
+            var budgetAmount = entry.Value.MaxAmount;
+            var timeframe = "";
+            var percentageSpent = entry.Value.CalculatePercentageSpent();
+            switch (entry.Value.Interval)
+            {
+                case PFT.Models.Budgets.Timeframe.Weekly:
+                    timeframe = "per week";
+                    break;
+                case PFT.Models.Budgets.Timeframe.Monthly:
+                    timeframe = "per month";
+                    break;
+                case PFT.Models.Budgets.Timeframe.Yearly:
+                    timeframe = "per year";
+                    break;
+            }
+
+            <div class="budget-instance">
+                <div class="budget-data">
+                    <h2>@budgetName</h2>
+                    <h3><span>€@budgetAmount</span><span> @timeframe</span></h3>
+                </div>
+                <progress class="budget-progress" max="100" value="@entry.Value.CurrentlySpent">@percentageSpent</progress>
             </div>
-            <progress class="budget-progress" max="100" value="@entry.Value.CurrentlySpent">@percentageSpent</progress>
-        </div>
-    }
+        }
+    </div>
 </div>

@@ -13,6 +13,28 @@ namespace PFT.Models.Budgets
         {
             Budgets = newData;
         }
+
+        public int GetTotalBudgetValue()
+        {
+            int value = 0;
+            foreach(var item in Budgets)
+            {
+                switch (item.Value.Interval)
+                {
+                    case Timeframe.Weekly:
+                        value += item.Value.MaxAmount * 52;
+                        break;
+                    case Timeframe.Monthly:
+                        value += item.Value.MaxAmount * 12;
+                        break;
+                    case Timeframe.Yearly:
+                        value += item.Value.MaxAmount;
+                        break;
+                }
+            }
+
+            return value;
+        }
     }
 
     public enum Timeframe
