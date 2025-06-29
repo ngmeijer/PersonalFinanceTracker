@@ -40,7 +40,7 @@
                         var stockData = entry.Value.StockData;
                         var changeClass = stockData.Change < 0 ? "negative" : "positive";
 
-                    <tr>
+                    <tr class="stock-instance">
                         <td>@stockData.Name</td>
                         <td>@stockData.Symbol</td>
                         <td>@entry.Value.CachedData.Quantity</td>
@@ -92,7 +92,7 @@
                     var stockData = entry.Value.StockData;
                     var changeClass = stockData.Change < 0 ? "negative" : "positive";
 
-                <tr>
+                <tr class="stock-instance">
                     <td>@stockData.Name</td>
                     <td>@stockData.Symbol</td>
                     <td>@entry.Value.CachedData.Quantity</td>

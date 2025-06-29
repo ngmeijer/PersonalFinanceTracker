@@ -7,6 +7,6 @@
     {
         public required string Symbol { get; set; }
         public required int Quantity { get; set; }
-        public int Type { get; set; }
+        public required int Type { get; set; }
     }
 }

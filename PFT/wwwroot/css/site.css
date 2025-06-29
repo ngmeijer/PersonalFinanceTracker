@@ -28,19 +28,7 @@ body {
     background:#353535;
 }
 
-h2{
-    color:white;
-}
-
-p{
-    color:white;
-}
-
-hr{
-    color:white;
-}
-
-a{
+.page-title{
     color:white;
 }
 

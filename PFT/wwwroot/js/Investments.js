@@ -75,7 +75,7 @@ function handleAddInvestment() {
         data: JSON.stringify(requiredData),
         success: function (response) {
             console.log('Success:', response)
-            addInvestmentModal.style.display = "none";
+            addBudgetModal.style.display = "none";
             getPageContent().classList.remove('blur');
 
             if (errorText) {
@@ -98,8 +98,8 @@ function handleAddInvestment() {
     });
 }
 
-$(".investment-table tr").click(function () {
-    $(".investment-table").not($(this).closest("table")).find("tr").removeClass("selected-investment");
-    $(this).addClass('selected-investment').siblings().removeClass('selected-investment');
+$(".stock-instance").click(function () {
+    $(".stock-instance").not(this).removeClass("selected-investment");
+    $(this).addClass('selected-investment');
     var value = $(this).find('td:first').html();
 });
