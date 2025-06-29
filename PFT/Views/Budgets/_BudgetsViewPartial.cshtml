@@ -12,6 +12,7 @@
         {
             var budgetName = entry.Value.Name;
             var budgetAmount = entry.Value.MaxAmount;
+            var currentlySpent = entry.Value.CurrentlySpent;
             var timeframe = "";
             var percentageSpent = entry.Value.CalculatePercentageSpent();
             switch (entry.Value.Interval)
@@ -30,7 +31,10 @@
             <div class="budget-instance">
                 <div class="budget-data">
                     <h2>@budgetName</h2>
-                    <h3><span>€@budgetAmount</span><span> @timeframe</span></h3>
+                    <div>
+                        <h3>Currently spent: €@currentlySpent</h3>
+                        <h3><span>€@budgetAmount</span><span> @timeframe</span></h3>
+                    </div>
                 </div>
                 <progress class="budget-progress" max="100" value="@entry.Value.CurrentlySpent">@percentageSpent</progress>
             </div>

@@ -17,7 +17,7 @@
     background: #284B63;
     border-radius: 20px;
     width: 40vw;
-    max-height: 10vh;
+    max-height: 12vh;
     margin: 1vh 1vw;
 }
 
@@ -25,25 +25,39 @@
     background-color: #48cae4;
 }
 
-.budget-data > h2 {
+.budget-instance h2,
+.budget-instance h3 {
     color: white;
 }
 
-.budget-data > span{
-    color:white;
+.selected-budget h2,
+.selected-budget h3 {
+    color: black;
 }
 
 .budget-instance > progress {
-    margin:1vh 2vw;
-    width:90%;
-    height:3vh;
+    margin:0.5vh 1vw 1.5vh 1vw;
+    width:95%;
+    height:0vh;
 }
 
-.budget-data{
-    padding:0.5vh 1vw;
-    display:flex;
-    justify-content:space-between;
+.budget-data {
+    padding: 0.5vh 1vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+    .budget-data h2 {
+        margin: 0;
+    }
+
+    .budget-data .budget-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25em;
+    }
 
 .budget-action-modal {
     position: absolute;
