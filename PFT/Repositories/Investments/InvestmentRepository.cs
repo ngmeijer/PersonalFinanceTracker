@@ -35,13 +35,13 @@ namespace PFT.Repositories.Investments
             await connection.CloseAsync();
         }
 
-        public async Task ChangeInvestmentQuantityAsync(Investment investment)
+        public async Task ChangeInvestmentAsync(Investment investment)
         {
             using var connection = new SqlConnection(_connectionString);
 
             await connection.OpenAsync();
 
-            SqlCommand command = new SqlCommand(@"UPDATE Investments SET Quantity = @quantity WHERE Symbol = @symbol AND Type = @type");
+            SqlCommand command = new SqlCommand(@"UPDATE Investments SET Quantity = @quantity WHERE Symbol = @symbol AND Type = @type", connection);
 
             command.Parameters.AddWithValue("@symbol", investment.Symbol);
             command.Parameters.AddWithValue("@quantity", investment.Quantity);

@@ -7,7 +7,7 @@ namespace PFT.Services.Investments
     {
         Task<ServiceResult> AddInvestmentAsync(InvestmentRequest request);
         Task<ServiceResult> RemoveInvestmentAsync(string symbol);
-        Task<ServiceResult> AdjustInvestmentQuantityAsync(Investment investment);
+        Task<ServiceResult> ChangeInvestmentAsync(Investment investment);
         Task<Dictionary<string, InvestmentWrapper>> RefreshData();
     }
 }

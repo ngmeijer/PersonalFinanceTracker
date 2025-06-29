@@ -110,9 +110,18 @@ namespace PFT.Services.Investments
             };
         }
 
-        public async Task<ServiceResult> AdjustInvestmentQuantityAsync(Investment request)
+        public async Task<ServiceResult> ChangeInvestmentAsync(Investment request)
         {
             TwelveDataQuote data = await RequestStockData(request.Symbol);
+            if(data.ResponseStatus != Enums.TwelveDataClientResponseStatus.Ok)
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = $"API request failed. Reason: {data.ResponseMessage}."
+                };
+            }
+
             if (data == null)
             {
                 return new ServiceResult
@@ -138,7 +147,7 @@ namespace PFT.Services.Investments
                 Type = request.Type
             };
 
-            await _repository.ChangeInvestmentQuantityAsync(investmentData);
+            await _repository.ChangeInvestmentAsync(investmentData);
             return new ServiceResult
             {
                 Success = true,

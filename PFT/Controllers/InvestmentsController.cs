@@ -87,7 +87,7 @@ namespace PFT.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> AdjustQuantityOfInvestment(Investment request) 
+        public async Task<IActionResult> ChangeInvestment([FromBody]Investment request) 
         {
             if (request == null)
             {
@@ -96,7 +96,7 @@ namespace PFT.Controllers
 
             try
             {
-                var result = await _service.AdjustInvestmentQuantityAsync(request);
+                var result = await _service.ChangeInvestmentAsync(request);
                 if (!result.Success)
                 {
                     return BadRequest(result.Message);

@@ -12,6 +12,8 @@
 });
 
 //Enables the proper modal
+const quantityField = document.getElementById('change-quantity');
+
 document.querySelectorAll('[id$="-investment-button"').forEach(button => {
     button.addEventListener('click', () => {
         const modalType = button.id.split('-')[0];
@@ -19,6 +21,10 @@ document.querySelectorAll('[id$="-investment-button"').forEach(button => {
         if (modalType == "remove") {
             if (currentlySelectedStock == null)
                 return;
+        }
+
+        if (modalType == "change") {
+            quantityField.value = amountOfSelectedStock;
         }
 
         modal.style.display = "flex";
@@ -65,7 +71,6 @@ document.querySelectorAll('.confirm-button').forEach(button => {
 
 const addInvestmentModal = document.querySelector(`.investment-action-modal[data-modal="add"]`);
 const errorText = addInvestmentModal.querySelector('.error-content');
-
 function handleAddInvestment() {
     var givenSymbol = $('#symbol').val();
     var givenQuantity = $('#quantity').val();
@@ -83,7 +88,7 @@ function handleAddInvestment() {
         data: JSON.stringify(requiredData),
         success: function (response) {
             console.log('Success:', response)
-            addBudgetModal.style.display = "none";
+            addInvestmentModal.style.display = "none";
             getPageContent().classList.remove('blur');
 
             if (errorText) {
@@ -106,6 +111,8 @@ function handleAddInvestment() {
     });
 }
 
+const removeInvestmentModal = document.querySelector(`.investment-action-modal[data-modal="remove"]`);
+
 function handleRemoveInvestment() {
     $.ajax({
         url: removeInvestmentUrl,
@@ -114,7 +121,7 @@ function handleRemoveInvestment() {
         data: JSON.stringify(currentlySelectedStock),
         success: function (response) {
             console.log('Success:', response)
-            addInvestmentModal.style.display = "none";
+            removeInvestmentModal.style.display = "none";
             getPageContent().classList.remove('blur');
 
             if (errorText) {
@@ -137,10 +144,42 @@ function handleRemoveInvestment() {
     });
 }
 
+const changeInvestmentModal = document.querySelector(`.investment-action-modal[data-modal="change"]`);
+function handleChangeInvestment() {
+    var givenQuantity = $('#change-quantity').val();
+    var requiredData = {
+        Symbol: currentlySelectedStock,
+        Quantity: givenQuantity,
+    };
+    $.ajax({
+        url: changeInvestmentUrl,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(requiredData),
+        success: function (response) {
+            console.log('Success:', response)
+            addInvestmentModal.style.display = "none";
+            getPageContent().classList.remove('blur');
+
+            if (errorText) {
+                errorText.style.display = 'none';
+                errorText.innerHTML = "";
+            }
+        },
+        error: function (response) {
+            console.log('Failure:', response, " - provided data:", requiredData);
+        }
+    });
+}
+
 var currentlySelectedStock = null;
+var amountOfSelectedStock = 0;
 $(".stock-instance").click(function () {
     $(".stock-instance").not(this).removeClass("selected-investment");
     $(this).addClass('selected-investment');
-    var value = $(this).find('td').eq(1).html();
-    currentlySelectedStock = value;
+    var symbol = $(this).find('td').eq(1).html();
+    currentlySelectedStock = symbol;
+
+    var amount = $(this).find('td').eq(2).html();
+    amountOfSelectedStock = amount;
 });

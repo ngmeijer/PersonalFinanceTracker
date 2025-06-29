@@ -11,6 +11,7 @@
     <script>
         const addInvestmentUrl = '@Url.Action("AddInvestment", "Investments")';
         const removeInvestmentUrl = '@Url.Action("RemoveInvestment", "Investments")';
+        const changeInvestmentUrl = '@Url.Action("ChangeInvestment", "Investments")';
      </script>
     <script src="~/js/Investments.js"></script>
 }
@@ -25,7 +26,7 @@
 
     <button id="remove-investment-button">Remove selected investment</button>
     <button id="add-investment-button">Add investment</button>
-    <button id="change-quantity-button">Change quantity</button>
+    <button id="change-investment-button">Change investment</button>
 </div>
 
 <<!-- Add Modal -->
@@ -64,7 +65,7 @@
 
 <!-- Change Quantity Modal -->
 <div class="investment-action-modal" data-modal="change">
-    <h2>Change quantity</h2>
+    <h2>Change investment</h2>
     <div class="data-container">
         <label for="quantity">Quantity:</label>
         <input type="number" id="change-quantity" step="any" min="0" value="5">
