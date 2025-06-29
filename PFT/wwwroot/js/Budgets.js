@@ -78,7 +78,7 @@ function handleAddBudget() {
             console.log('Success:', response)
             addBudgetModal.style.display = "none";
             getPageContent().classList.remove('blur');
-
+            createPieChart();
             if (errorText) {
                 errorText.style.display = 'none';
                 errorText.innerHTML = "";
@@ -90,11 +90,47 @@ function handleAddBudget() {
     });
 }
 
-var currentlySelectedStock = null;
-var amountOfSelectedStock = 0;
+const removeBudgetModal = document.querySelector(`.budget-action-modal[data-modal="remove"]`);
+function handleRemoveBudget() {
+    console.log("removing budget instance");
+    $.ajax({
+        url: removeBudgetUrl,
+        type: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify(currentlySelectedBudget),
+        success: function (response) {
+            console.log('Success:', response)
+            removeBudgetModal.style.display = "none";
+            getPageContent().classList.remove('blur');
+            createPieChart();
+
+            if (errorText) {
+                errorText.style.display = 'none';
+                errorText.innerHTML = "";
+            }
+        },
+        error: function (response) {
+            if (errorText) {
+                errorText.style.display = 'block';
+                errorText.innerHTML = 'An error occurred. Could not remove the selected budget with name:' + currentlySelectedBudget;
+                const symbolSpan = document.getElementById('error-message-symbol');
+                if (symbolSpan) {
+                    symbolSpan.textContent = givenSymbol;
+                    symbolSpan.style.color = "red";
+                }
+            }
+            console.log('Failure:', response, " - provided data:", currentlySelectedBudget);
+        }
+    });
+}
+
+var currentlySelectedBudget = null;
+var amountOfMaxBudget = 0;
 $(".budget-instance").click(function () {
     $(".budget-instance").not(this).removeClass("selected-budget");
     $(this).addClass('selected-budget');
+    currentlySelectedBudget = $(this).find('h2').text();
+    console.log(currentlySelectedBudget);
     //var symbol = $(this).find('td').eq(1).html();
     //currentlySelectedStock = symbol;
 

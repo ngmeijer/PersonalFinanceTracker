@@ -20,27 +20,30 @@ function normalizeBudgetAmounts() {
 }
 
 normalizeBudgetAmounts();
+createPieChart();
 
-const data = {
-    labels: budgetNames,
-    datasets: [{
-        label: 'Budgets',
-        data: normalizedBudgets,
-        hoverOffset: 4
-    }]
-};
+function createPieChart() {
+    const data = {
+        labels: budgetNames,
+        datasets: [{
+            label: 'Budgets',
+            data: normalizedBudgets,
+            hoverOffset: 4
+        }]
+    };
 
-var pieChart = new Chart(ctx, {
-    type: 'pie',
-    data: data,
-    options: {
-        plugins: {
-            legend: {
-                display: true,
-                labels: {
-                    color: 'rgb(255, 255, 255)'
+    var pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'rgb(255, 255, 255)'
+                    }
                 }
             }
         }
-    }
-});
+    });
+}

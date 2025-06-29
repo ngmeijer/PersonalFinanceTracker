@@ -68,7 +68,7 @@ namespace PFT.Repositories.Budgets
             };
         }
 
-        public Task ChangeBudgetAmountAsync(Budget budget)
+        public async Task<ServiceResult> ChangeBudgetAmountAsync(Budget budget)
         {
             throw new NotImplementedException();
         }
@@ -102,9 +102,23 @@ namespace PFT.Repositories.Budgets
             return data;
         }
 
-        public Task RemoveBudgetAsync(string symbol)
+        public async Task<ServiceResult> RemoveBudgetAsync(string name)
         {
-            throw new NotImplementedException();
+            using var connection = new SqlConnection(_connectionString);
+
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand($"DELETE FROM Budgets WHERE Name = @name", connection);
+            command.Parameters.AddWithValue("@name", name);
+
+            await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ServiceResult
+            {
+                Success = true,
+                Message = "Succesfully deleted budget."
+            };
         }
     }
 }

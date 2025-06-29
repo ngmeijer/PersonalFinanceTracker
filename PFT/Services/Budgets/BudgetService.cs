@@ -46,9 +46,23 @@ namespace PFT.Services.Budgets
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult> RemoveBudgetAsync(string name)
+        public async Task<ServiceResult> RemoveBudgetAsync(string name)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name))
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = "A budget should have a name.",
+                };
+            }
+
+            await _repository.RemoveBudgetAsync(name);
+            return new ServiceResult
+            {
+                Success = true,
+                Message = "Budget removed successfully"
+            };
         }
 
         public async Task<Dictionary<string, Budget>> RefreshData()

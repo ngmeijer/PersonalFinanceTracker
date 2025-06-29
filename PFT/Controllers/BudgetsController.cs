@@ -60,6 +60,39 @@ namespace PFT.Controllers
             }
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> RemoveBudget([FromBody] string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage);
+
+                    return BadRequest(string.Join(" | ", errors));
+                }
+            }
+
+            try
+            {
+                var result = await _service.RemoveBudgetAsync(name);
+                if (!result.Success)
+                {
+                    return BadRequest(result.Message);
+                }
+
+                _model.SetAllBudgetData(await _service.RefreshData());
+
+                return Ok(new { dataReceived = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occured here: {ex.Message}");
+            }
+        }
+
         [HttpPost]
         public async Task<PartialViewResult> RefreshData()
         {

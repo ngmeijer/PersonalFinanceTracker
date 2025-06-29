@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const addBudgetUrl = '@Url.Action("AddBudget", "Budgets")';
+        const removeBudgetUrl = '@Url.Action("RemoveBudget", "Budgets")';
+
         const budgetsCollection = @Html.Raw(Json.Serialize(Model.GetBudgets()));
 
         const budgetNames = Object.keys(budgetsCollection);
