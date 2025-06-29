@@ -16,6 +16,11 @@ document.querySelectorAll('[id$="-investment-button"').forEach(button => {
     button.addEventListener('click', () => {
         const modalType = button.id.split('-')[0];
         const modal = document.querySelector(`.investment-action-modal[data-modal="${modalType}"]`);
+        if (modalType == "remove") {
+            if (currentlySelectedStock == null)
+                return;
+        }
+
         modal.style.display = "flex";
         getPageContent().classList.add('blur');
     });
@@ -46,6 +51,9 @@ document.querySelectorAll('.confirm-button').forEach(button => {
                 handleAddInvestment();
                 break;
             case 'remove':
+                if (currentlySelectedStock == null)
+                    return;
+
                 handleRemoveInvestment();
                 break;
             case 'change':
@@ -98,8 +106,41 @@ function handleAddInvestment() {
     });
 }
 
+function handleRemoveInvestment() {
+    $.ajax({
+        url: removeInvestmentUrl,
+        type: 'DELETE',
+        contentType: 'application/json',
+        data: JSON.stringify(currentlySelectedStock),
+        success: function (response) {
+            console.log('Success:', response)
+            addInvestmentModal.style.display = "none";
+            getPageContent().classList.remove('blur');
+
+            if (errorText) {
+                errorText.style.display = 'none';
+                errorText.innerHTML = "";
+            }
+        },
+        error: function (response) {
+            if (errorText) {
+                errorText.style.display = 'block';
+                errorText.innerHTML = 'An error occurred. Could not remove the selected investment with symbol:' + currentlySelectedStock;
+                const symbolSpan = document.getElementById('error-message-symbol');
+                if (symbolSpan) {
+                    symbolSpan.textContent = givenSymbol;
+                    symbolSpan.style.color = "red";
+                }
+            }
+            console.log('Failure:', response, " - provided data:", currentlySelectedStock);
+        }
+    });
+}
+
+var currentlySelectedStock = null;
 $(".stock-instance").click(function () {
     $(".stock-instance").not(this).removeClass("selected-investment");
     $(this).addClass('selected-investment');
-    var value = $(this).find('td:first').html();
+    var value = $(this).find('td').eq(1).html();
+    currentlySelectedStock = value;
 });

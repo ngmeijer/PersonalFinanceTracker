@@ -61,9 +61,29 @@ namespace PFT.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> RemoveInvestment(string symbol)
+        public async Task<IActionResult> RemoveInvestment([FromBody]string symbol)
         {
-            return Ok();
+            if (string.IsNullOrEmpty(symbol))
+            {
+                return BadRequest("No data received");
+            }
+
+            try
+            {
+                var result = await _service.RemoveInvestmentAsync(symbol);
+                if (!result.Success)
+                {
+                    return BadRequest(result.Message);
+                }
+
+                await RefreshData();
+
+                return Ok(new { dataReceived = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occured here: {ex.Message}");
+            }
         }
 
         [HttpPut]

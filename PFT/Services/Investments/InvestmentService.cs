@@ -91,9 +91,23 @@ namespace PFT.Services.Investments
             return investmentsCollection;
         }
 
-        public Task<ServiceResult> RemoveInvestmentAsync(string symbol)
+        public async Task<ServiceResult> RemoveInvestmentAsync(string symbol)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(symbol))
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = "The provided symbol is not valid."
+                };
+            }
+
+            await _repository.RemoveInvestmentAsync(symbol);
+            return new ServiceResult
+            {
+                Success = true,
+                Message = "Investment removed successfully"
+            };
         }
 
         public async Task<ServiceResult> AdjustInvestmentQuantityAsync(Investment request)

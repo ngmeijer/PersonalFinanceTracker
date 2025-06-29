@@ -1,8 +1,4 @@
-﻿h1, h3 {
-    color: white;
-}
-
-.content {
+﻿.content {
     transition: filter 0.3s ease;
 }
 
@@ -17,11 +13,19 @@
     padding-right: 2vw;
 }
 
+#general-information > h3 {
+    color:white;
+}
+
 .investment-category {
     background: #3c6e71;
     padding: 1vh 1vw;
     margin: 3vh 1vw;
     border-radius: 25px;
+}
+
+.investment-category > h3{
+    color:white;
 }
 
 table {

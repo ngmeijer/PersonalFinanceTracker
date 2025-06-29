@@ -31,6 +31,8 @@ namespace PFT.Repositories.Investments
             command.Parameters.AddWithValue("@type", investment.Type);
 
             await command.ExecuteNonQueryAsync();
+
+            await connection.CloseAsync();
         }
 
         public async Task ChangeInvestmentQuantityAsync(Investment investment)
@@ -46,6 +48,8 @@ namespace PFT.Repositories.Investments
             command.Parameters.AddWithValue("@type", investment.Type);
 
             await command.ExecuteNonQueryAsync();
+
+            await connection.CloseAsync();
         }
 
         public async Task<Dictionary<string, InvestmentWrapper>> GetAllInvestmentsAsync()
@@ -76,12 +80,22 @@ namespace PFT.Repositories.Investments
                 });
             }
 
+            await connection.CloseAsync();
+
             return data;
         }
 
-        public Task RemoveInvestmentAsync(string symbol)
+        public async Task RemoveInvestmentAsync(string symbol)
         {
-            throw new NotImplementedException();
+            using var connection = new SqlConnection(_connectionString);
+
+            await connection.OpenAsync();
+
+            using var command = new SqlCommand($"DELETE FROM Investments WHERE Symbol = @symbol", connection);
+            command.Parameters.AddWithValue("@symbol", symbol);
+
+            await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
         }
     }
 }
