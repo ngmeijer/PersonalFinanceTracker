@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using PFT.Data;
 using PFT.Models.Investments;
+using PFT.Repositories.Investments;
 using PFT.Services.Investments;
 using PFT.Utilities;
 using System.Net.Http;

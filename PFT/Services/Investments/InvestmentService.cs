@@ -28,23 +28,20 @@ namespace PFT.Services.Investments
 
         public async Task<ServiceResult> AddInvestmentAsync(InvestmentRequest request)
         {
-            TwelveDataQuote data = await RequestStockData(request.Symbol);
-            if (data == null)
+            if(request.Quantity < 1)
             {
-                return new ServiceResult
-                {
-                    Success = false,
-                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
-                };
+                throw new ArgumentException($"Provided quantity ({request.Quantity}) is less than the minimum (1)");
             }
 
-            if (string.IsNullOrEmpty(data.Name))
+            TwelveDataQuote? data = await RequestStockData(request.Symbol);
+            
+            if (data == null)
             {
-                return new ServiceResult
-                {
-                    Success = false,
-                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
-                };
+                throw new ArgumentException("Data received from API is null.");
+            }
+
+            if(string.IsNullOrEmpty(data.Name)) {
+                throw new ArgumentException($"Invalid data received from API.");
             }
 
             Investment investmentData = new Investment()
@@ -62,7 +59,7 @@ namespace PFT.Services.Investments
             };
         }
 
-        public async Task<TwelveDataQuote> RequestStockData(string symbol)
+        public async Task<TwelveDataQuote?> RequestStockData(string symbol)
         {
             try
             {

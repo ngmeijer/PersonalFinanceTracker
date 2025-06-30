@@ -24,7 +24,14 @@ namespace PFT.Repositories.Investments
 
             await connection.OpenAsync();
 
-            SqlCommand command = new SqlCommand(@"INSERT INTO Investments (Symbol, Quantity, Type) VALUES (@symbol, @quantity, @type)", connection);
+            if(connection.State != ConnectionState.Open) 
+            {
+                throw new Exception("Connection is invalid.");
+            }
+
+            SqlCommand command = new SqlCommand(@"INSERT INTO Investments (Symbol, Quantity, Type) 
+                                                                                        VALUES (@symbol, @quantity, @type)", 
+                                                                                        connection);
 
             command.Parameters.AddWithValue("@symbol", investment.Symbol);
             command.Parameters.AddWithValue("@quantity", investment.Quantity);
