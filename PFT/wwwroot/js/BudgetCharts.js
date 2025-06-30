@@ -1,5 +1,9 @@
 ﻿const ctx = document.getElementById('myChart');
+console.log(ctx);
 var normalizedBudgets = [];
+
+let currentChart;
+
 function normalizeBudgetAmounts() {
     for (var index = 0; index < budgetValues.length; index++) {
         switch (budgetValues[index].interval) {
