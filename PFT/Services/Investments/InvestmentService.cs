@@ -33,6 +33,12 @@ namespace PFT.Services.Investments
                 throw new ArgumentException($"Provided quantity ({request.Quantity}) is less than the minimum (1)");
             }
 
+            bool exists = await _repository.CheckIfInvestmentExists(request.Symbol);
+            if(exists)
+            {
+                throw new ArgumentException($"Investment with symbol '{request.Symbol} already exists in the database.'");
+            }
+
             TwelveDataQuote? data = await RequestStockData(request.Symbol);
             
             if (data == null)
@@ -79,13 +85,21 @@ namespace PFT.Services.Investments
         /// <returns></returns>
         public async Task<Dictionary<string, InvestmentWrapper>> RefreshData()
         {
-            Dictionary<string, InvestmentWrapper> investmentsCollection = await _repository.GetAllInvestmentsAsync();
-            foreach (KeyValuePair<string, InvestmentWrapper> entry in investmentsCollection)
+            Dictionary<string, Investment> rawInvestmentData = await _repository.GetAllInvestmentsAsync();
+            Dictionary<string, InvestmentWrapper> realtimeInvestmentData = new Dictionary<string, InvestmentWrapper>();
+            foreach (KeyValuePair<string, Investment> entry in rawInvestmentData)
             {
-                entry.Value.StockData = await RequestStockData(entry.Key);
+                if (entry.Value == null)
+                    continue;
+
+                realtimeInvestmentData.Add(entry.Key, new InvestmentWrapper
+                {
+                    StockData = await RequestStockData(entry.Key),
+                    CachedData = entry.Value
+                });
             }
 
-            return investmentsCollection;
+            return realtimeInvestmentData;
         }
 
         public async Task<ServiceResult> RemoveInvestmentAsync(string symbol)

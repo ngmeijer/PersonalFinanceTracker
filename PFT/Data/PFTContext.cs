@@ -12,14 +12,8 @@ namespace PFT.Data
         public DbSet<Investment> Investments { get; set; }
         public DbSet<Budget> Budgets { get; set; }
 
-        public PFTContext()
-        {
-
-        }
-
         public PFTContext(DbContextOptions<PFTContext> options) : base(options)
         {
-            
         }
     }
 }

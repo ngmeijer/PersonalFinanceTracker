@@ -8,6 +8,7 @@ namespace PFT.Repositories.Investments
         Task RemoveInvestmentAsync(string symbol);
         Task ChangeInvestmentAsync(Investment investment);
 
-        Task<Dictionary<string, InvestmentWrapper>> GetAllInvestmentsAsync();
+        Task<Dictionary<string, Investment>> GetAllInvestmentsAsync();
+        Task<bool> CheckIfInvestmentExists(string symbol);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.CodeAnalysis.Elfie.Model;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using PFT.Data;
 using PFT.Models.Investments;
@@ -11,98 +13,48 @@ namespace PFT.Repositories.Investments
         private PFTContext _context;
         private string _connectionString;
 
-        public InvestmentRepository(IConfiguration config)
+        public InvestmentRepository(PFTContext context)
         {
-            if (config == null) throw new ArgumentNullException("config is null");
-
-            _connectionString = config.GetConnectionString("DefaultConnection");
+            _context = context;
         }
 
-        public async Task AddInvestmentAsync(Investment investment)
+        public async Task AddInvestmentAsync(Investment newInvestment)
         {
-            using var connection = new SqlConnection(_connectionString);
-
-            await connection.OpenAsync();
-
-            if(connection.State != ConnectionState.Open) 
-            {
-                throw new Exception("Connection is invalid.");
-            }
-
-            SqlCommand command = new SqlCommand(@"INSERT INTO Investments (Symbol, Quantity, Type) 
-                                                                                        VALUES (@symbol, @quantity, @type)", 
-                                                                                        connection);
-
-            command.Parameters.AddWithValue("@symbol", investment.Symbol);
-            command.Parameters.AddWithValue("@quantity", investment.Quantity);
-            command.Parameters.AddWithValue("@type", investment.Type);
-
-            await command.ExecuteNonQueryAsync();
-
-            await connection.CloseAsync();
+            _context.Investments.Add(newInvestment);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task ChangeInvestmentAsync(Investment investment)
+        public async Task ChangeInvestmentAsync(Investment requestedInvestment)
         {
-            using var connection = new SqlConnection(_connectionString);
+            var investment = await _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == requestedInvestment.Symbol);
+            if (investment == null)
+                throw new KeyNotFoundException($"Investment with symbol {requestedInvestment.Symbol} was not found in the database");
 
-            await connection.OpenAsync();
+            investment.Quantity = requestedInvestment.Quantity;
 
-            SqlCommand command = new SqlCommand(@"UPDATE Investments SET Quantity = @quantity WHERE Symbol = @symbol AND Type = @type", connection);
-
-            command.Parameters.AddWithValue("@symbol", investment.Symbol);
-            command.Parameters.AddWithValue("@quantity", investment.Quantity);
-            command.Parameters.AddWithValue("@type", investment.Type);
-
-            await command.ExecuteNonQueryAsync();
-
-            await connection.CloseAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<Dictionary<string, InvestmentWrapper>> GetAllInvestmentsAsync()
+        public async Task<Dictionary<string, Investment>> GetAllInvestmentsAsync()
         {
-            Dictionary<string, InvestmentWrapper> data = new();
+            Dictionary<string, Investment> data = await _context.Investments.ToDictionaryAsync(investment => investment.Symbol);
 
-            using var connection = new SqlConnection(_connectionString);
-
-            await connection.OpenAsync();
-
-            using var command = new SqlCommand("SELECT Id, Symbol, Type, Quantity FROM Investments", connection);
-            using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-            {
-                string symbol = reader.GetString("Symbol");
-                if (data.ContainsKey(symbol))
-                    continue;
-
-                data.Add(symbol, new InvestmentWrapper
-                {
-                    CachedData = new()
-                    {
-                        Id = reader.GetInt32("Id"),
-                        Type = (InvestmentType)reader.GetInt32("Type"),
-                        Quantity = reader.GetFloat("quantity")
-                    }
-                });
-            }
-
-            await connection.CloseAsync();
-
-            return data;
+            return data;       
         }
 
-        public async Task RemoveInvestmentAsync(string symbol)
+        public async Task RemoveInvestmentAsync(string symbolToDelete)
         {
-            using var connection = new SqlConnection(_connectionString);
+            var investment = await _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == symbolToDelete);
+            if (investment == null)
+                throw new KeyNotFoundException($"Investment with symbol {symbolToDelete} was not found in the database");
 
-            await connection.OpenAsync();
+            _context.Investments.Remove(investment);
+            await _context.SaveChangesAsync();
+        }
 
-            using var command = new SqlCommand($"DELETE FROM Investments WHERE Symbol = @symbol", connection);
-            command.Parameters.AddWithValue("@symbol", symbol);
-
-            await command.ExecuteNonQueryAsync();
-            await connection.CloseAsync();
+        public async Task<bool> CheckIfInvestmentExists(string symbol)
+        {
+            return await _context.Investments.AnyAsync(i => i.Symbol == symbol);
         }
     }
 }

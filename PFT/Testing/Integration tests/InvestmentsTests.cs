@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using PFT.Controllers;
+using PFT.Data;
 using PFT.Models.Budgets;
 using PFT.Models.Investments;
 using PFT.Repositories.Investments;
@@ -14,6 +16,13 @@ namespace PFT.Integration_tests
 {
     public class InvestmentsTests
     {
+        private DbContextOptions<PFTContext> _options;
+
+        public InvestmentsTests()
+        {
+            _options = new DbContextOptionsBuilder<PFTContext>().UseInMemoryDatabase("TestDatabase").Options;
+        }
+
         [Fact]
         public async Task CanAddInvestment()
         {
