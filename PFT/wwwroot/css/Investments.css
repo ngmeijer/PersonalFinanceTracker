@@ -24,7 +24,7 @@
     border-radius: 25px;
 }
 
-.investment-category > h3{
+.investment-category > h3, h2{
     color:white;
 }
 

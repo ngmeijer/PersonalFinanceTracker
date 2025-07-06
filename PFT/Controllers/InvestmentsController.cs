@@ -12,6 +12,8 @@ using TwelveDataSharp.Library.ResponseModels;
 
 namespace PFT.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class InvestmentsController : Controller
     {
         private IInvestmentService? _service;
@@ -23,9 +25,12 @@ namespace PFT.Controllers
             _model = new();
         }
 
-        public ActionResult Index()
+        [HttpGet("{symbol}")]
+        public async Task<IActionResult> GetInvestment(string symbol)
         {
-            return View("Investments", _model);
+            InvestmentWrapper data = await _service.GetInvestment(symbol);
+
+            return Ok(data);
         }
 
         public async Task<IActionResult> Investments()
@@ -36,7 +41,7 @@ namespace PFT.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddInvestment([FromBody] InvestmentRequest request)
+        public async Task<IActionResult> AddInvestment(InvestmentRequest request)
         {
             if (request == null)
             {

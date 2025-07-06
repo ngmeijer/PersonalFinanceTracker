@@ -1,4 +1,5 @@
-﻿using PFT.Models.Investments;
+﻿using Microsoft.AspNetCore.Mvc;
+using PFT.Models.Investments;
 using PFT.Repositories.Investments;
 using PFT.Utilities;
 using System.Net.Http;
@@ -33,11 +34,11 @@ namespace PFT.Services.Investments
                 throw new ArgumentException($"Provided quantity ({request.Quantity}) is less than the minimum (1)");
             }
 
-            bool exists = await _repository.CheckIfInvestmentExists(request.Symbol);
-            if(exists)
-            {
-                throw new ArgumentException($"Investment with symbol '{request.Symbol} already exists in the database.'");
-            }
+            //bool exists = await _repository.CheckIfInvestmentExists(request.Symbol);
+            //if(exists)
+            //{
+            //    throw new ArgumentException($"Investment with symbol '{request.Symbol} already exists in the database.'");
+            //}
 
             TwelveDataQuote? data = await RequestStockData(request.Symbol);
             
@@ -164,6 +165,34 @@ namespace PFT.Services.Investments
                 Success = true,
                 Message = "Investment quantity changed successfully"
             };
+        }
+
+        public async Task<InvestmentWrapper> GetInvestment(string symbol)
+        {
+            Investment data = await _repository.GetInvestment(symbol);
+            InvestmentWrapper fullData = new InvestmentWrapper
+            {
+                CachedData = data,
+                StockData = await RequestStockData(symbol)
+            };
+
+            return fullData;
+        }
+
+        public async Task<Dictionary<string, InvestmentWrapper>> GetAllInvestments()
+        {
+            Dictionary<string, Investment> investmentsCollection = await _repository.GetAllInvestmentsAsync();
+            Dictionary<string, InvestmentWrapper> fullData = new();
+            foreach (KeyValuePair<string, Investment> entry in investmentsCollection)
+            {
+                fullData.Add(entry.Key, new InvestmentWrapper
+                {
+                    CachedData = entry.Value,
+                    StockData = await RequestStockData(entry.Key),
+                });
+            }
+
+            return fullData;
         }
     }
 }

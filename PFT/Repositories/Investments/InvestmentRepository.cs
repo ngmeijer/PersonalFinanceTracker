@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.Elfie.Model;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
@@ -35,13 +37,6 @@ namespace PFT.Repositories.Investments
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Dictionary<string, Investment>> GetAllInvestmentsAsync()
-        {
-            Dictionary<string, Investment> data = await _context.Investments.ToDictionaryAsync(investment => investment.Symbol);
-
-            return data;       
-        }
-
         public async Task RemoveInvestmentAsync(string symbolToDelete)
         {
             var investment = await _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == symbolToDelete);
@@ -55,6 +50,26 @@ namespace PFT.Repositories.Investments
         public async Task<bool> CheckIfInvestmentExists(string symbol)
         {
             return await _context.Investments.AnyAsync(i => i.Symbol == symbol);
+        }
+
+        public Task<Investment> GetInvestment(string symbol)
+        {
+            var investment = _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == symbol);
+            if (investment == null)
+                throw new KeyNotFoundException($"Investment with symbol {symbol} was not found in the database");
+
+            return investment;
+        }
+
+        public Task<Dictionary<string, Investment>> GetAllInvestmentsAsync()
+        {
+            if (_context.Investments == null)
+                throw new NullReferenceException("Investments collection is null.");
+
+            if (!_context.Investments.Any())
+                throw new ArgumentException("Collection does not contain any investments.");
+
+            return _context.Investments.ToDictionaryAsync(investment => investment.Symbol);
         }
     }
 }

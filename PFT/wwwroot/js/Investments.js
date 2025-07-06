@@ -19,12 +19,12 @@ document.querySelectorAll('[id$="-investment-button"').forEach(button => {
         const modalType = button.id.split('-')[0];
         const modal = document.querySelector(`.investment-action-modal[data-modal="${modalType}"]`);
         if (modalType == "remove") {
-            if (currentlySelectedStock == null)
+            if (currentlySelectedBudget == null)
                 return;
         }
 
         if (modalType == "change") {
-            quantityField.value = amountOfSelectedStock;
+            quantityField.value = amountOfMaxBudget;
         }
 
         modal.style.display = "flex";
@@ -57,7 +57,7 @@ document.querySelectorAll('.confirm-button').forEach(button => {
                 handleAddInvestment();
                 break;
             case 'remove':
-                if (currentlySelectedStock == null)
+                if (currentlySelectedBudget == null)
                     return;
 
                 handleRemoveInvestment();
@@ -118,7 +118,7 @@ function handleRemoveInvestment() {
         url: removeInvestmentUrl,
         type: 'DELETE',
         contentType: 'application/json',
-        data: JSON.stringify(currentlySelectedStock),
+        data: JSON.stringify(currentlySelectedInvestment),
         success: function (response) {
             console.log('Success:', response)
             removeInvestmentModal.style.display = "none";
@@ -132,14 +132,14 @@ function handleRemoveInvestment() {
         error: function (response) {
             if (errorText) {
                 errorText.style.display = 'block';
-                errorText.innerHTML = 'An error occurred. Could not remove the selected investment with symbol:' + currentlySelectedStock;
+                errorText.innerHTML = 'An error occurred. Could not remove the selected investment with symbol:' + currentlySelectedInvestment;
                 const symbolSpan = document.getElementById('error-message-symbol');
                 if (symbolSpan) {
                     symbolSpan.textContent = givenSymbol;
                     symbolSpan.style.color = "red";
                 }
             }
-            console.log('Failure:', response, " - provided data:", currentlySelectedStock);
+            console.log('Failure:', response, " - provided data:", currentlySelectedInvestment);
         }
     });
 }
@@ -148,7 +148,7 @@ const changeInvestmentModal = document.querySelector(`.investment-action-modal[d
 function handleChangeInvestment() {
     var givenQuantity = $('#change-quantity').val();
     var requiredData = {
-        Symbol: currentlySelectedStock,
+        Symbol: currentlySelectedBudget,
         Quantity: givenQuantity,
     };
     $.ajax({
@@ -172,14 +172,14 @@ function handleChangeInvestment() {
     });
 }
 
-var currentlySelectedStock = null;
-var amountOfSelectedStock = 0;
+var currentlySelectedInvestment = null;
+var amountOfStocks = 0;
 $(".stock-instance").click(function () {
     $(".stock-instance").not(this).removeClass("selected-investment");
     $(this).addClass('selected-investment');
     var symbol = $(this).find('td').eq(1).html();
-    currentlySelectedStock = symbol;
+    currentlySelectedInvestment = symbol;
 
     var amount = $(this).find('td').eq(2).html();
-    amountOfSelectedStock = amount;
+    amountOfStocks = amount;
 });

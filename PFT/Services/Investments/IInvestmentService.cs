@@ -1,4 +1,5 @@
-﻿using PFT.Models.Investments;
+﻿using Microsoft.AspNetCore.Mvc;
+using PFT.Models.Investments;
 using PFT.Utilities;
 
 namespace PFT.Services.Investments
@@ -9,5 +10,8 @@ namespace PFT.Services.Investments
         Task<ServiceResult> RemoveInvestmentAsync(string symbol);
         Task<ServiceResult> ChangeInvestmentAsync(Investment investment);
         Task<Dictionary<string, InvestmentWrapper>> RefreshData();
+
+        Task<InvestmentWrapper> GetInvestment(string symbol);
+        Task<Dictionary<string, InvestmentWrapper>> GetAllInvestments();
     }
 }
