@@ -17,9 +17,8 @@ builder.Services.AddDbContext<PFTContext>(options => {
 
 
 //Set up user registering functionality
-builder.Services.AddDefaultIdentity<PFTUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<PFTUser>()
     .AddEntityFrameworkStores<PFTContext>();
-
 
 //Set up services and repositories
 builder.Services.AddScoped<IInvestmentService, InvestmentService>();

@@ -17,6 +17,7 @@
                 {
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Symbol</th>
                         <th>Amount held</th>
@@ -41,8 +42,9 @@
                         var changeClass = stockData.Change < 0 ? "negative" : "positive";
 
                     <tr class="stock-instance">
+                        <td>@entry.Value.CachedData.Id</td>
                         <td>@stockData.Name</td>
-                        <td>@stockData.Symbol</td>
+                        <td>@entry.Value.CachedData.Symbol</td>
                         <td>@entry.Value.CachedData.Quantity</td>
                         <td>@entry.Value.CalculateValue() @stockData.Currency</td>
                         <td>@stockData.Close @stockData.Currency</td>
@@ -69,6 +71,7 @@
             {
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Symbol</th>
                     <th>Amount held</th>
@@ -93,8 +96,9 @@
                     var changeClass = stockData.Change < 0 ? "negative" : "positive";
 
                 <tr class="stock-instance">
+                    <td>@entry.Value.CachedData.Id</td>
                     <td>@stockData.Name</td>
-                    <td>@stockData.Symbol</td>
+                    <td>@entry.Value.CachedData.Symbol</td>
                     <td>@entry.Value.CachedData.Quantity</td>
                     <td>@entry.Value.CalculateValue() @stockData.Currency</td>
                     <td>@stockData.Close @stockData.Currency</td>

@@ -1,4 +1,5 @@
-﻿using TwelveDataSharp.Library.ResponseModels;
+﻿using System.ComponentModel.DataAnnotations;
+using TwelveDataSharp.Library.ResponseModels;
 
 namespace PFT.Models.Investments
 {
@@ -10,6 +11,8 @@ namespace PFT.Models.Investments
         public int Id { get; set; }
         public string Symbol { get; set; }
         public InvestmentType Type { get; set; }
+
+        [Range(0, 9999999)]
         public float Quantity { get; set; }
     }
 

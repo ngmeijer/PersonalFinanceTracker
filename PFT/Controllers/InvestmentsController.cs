@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using PFT.Data;
+using PFT.Models;
 using PFT.Models.Investments;
 using PFT.Repositories.Investments;
 using PFT.Services.Investments;
@@ -12,32 +13,37 @@ using TwelveDataSharp.Library.ResponseModels;
 
 namespace PFT.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     public class InvestmentsController : Controller
     {
         private IInvestmentService? _service;
         private InvestmentsModel _model;
+        private DashboardModel _summaryModel;
 
         public InvestmentsController(IInvestmentService service)
         {
             _service = service;
             _model = new();
         }
-
-        [HttpGet("{symbol}")]
-        public async Task<IActionResult> GetInvestment(string symbol)
-        {
-            InvestmentWrapper data = await _service.GetInvestment(symbol);
-
-            return Ok(data);
-        }
-
+      
         public async Task<IActionResult> Investments()
         {
             await RefreshData();
 
             return View(_model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvestment(int id)
+        {
+            InvestmentWrapper data = await _service.GetInvestment(id);
+
+            return Ok(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvestments()
+        {
+            return Ok();
         }
 
         [HttpPost]
@@ -53,12 +59,12 @@ namespace PFT.Controllers
                 var result = await _service.AddInvestmentAsync(request);
                 if (!result.Success)
                 {
-                    return BadRequest(result.Message);
+                    return BadRequest(result.Messages[0]);
                 }
 
                 await RefreshData();
 
-                return Ok(new { dataReceived = result.Message });
+                return Ok("Added investment succesfully.");
             }
             catch (Exception ex)
             {
@@ -67,24 +73,19 @@ namespace PFT.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> RemoveInvestment([FromBody]string symbol)
+        public async Task<IActionResult> RemoveInvestment(int id)
         {
-            if (string.IsNullOrEmpty(symbol))
-            {
-                return BadRequest("No data received");
-            }
-
             try
             {
-                var result = await _service.RemoveInvestmentAsync(symbol);
+                var result = await _service.DeleteInvestment(id);
                 if (!result.Success)
                 {
-                    return BadRequest(result.Message);
+                    return BadRequest(result.GetMessages());
                 }
 
                 await RefreshData();
 
-                return Ok(new { dataReceived = result.Message });
+                return Ok("Removed investment succesfully.");
             }
             catch (Exception ex)
             {
@@ -105,12 +106,12 @@ namespace PFT.Controllers
                 var result = await _service.ChangeInvestmentAsync(request);
                 if (!result.Success)
                 {
-                    return BadRequest(result.Message);
+                    return BadRequest(result.GetMessages());
                 }
 
                 await RefreshData();
 
-                return Ok(new { dataReceived = result.Message });
+                return Ok("Changed investment succesfully.");
             }
             catch (Exception ex)
             {
@@ -121,7 +122,7 @@ namespace PFT.Controllers
         [HttpPost]
         public async Task<PartialViewResult> RefreshData()
         {
-            _model.Investments = await _service.RefreshData();
+            _model.Investments = await _service.GetInvestments();
             
             _model.LatestUpdateTime = DateTime.Now;
 

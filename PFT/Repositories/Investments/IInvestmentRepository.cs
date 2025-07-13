@@ -4,10 +4,10 @@ namespace PFT.Repositories.Investments
 {
     public interface IInvestmentRepository
     {
-        Task AddInvestmentAsync(Investment investment);
-        Task RemoveInvestmentAsync(string symbol);
-        Task ChangeInvestmentAsync(Investment investment);
-        Task<Investment> GetInvestment(string symbol);
-        Task<Dictionary<string, Investment>> GetAllInvestmentsAsync();
+        void AddInvestmentAsync(Investment investment);
+        void RemoveInvestmentAsync(int id);
+        void ChangeInvestmentAsync(Investment investment);
+        Dictionary<string, Investment> GetAllInvestmentsAsync();
+        Investment GetInvestment(int id);
     }
 }

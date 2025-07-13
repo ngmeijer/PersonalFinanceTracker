@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using PFT.Models.Investments;
 using PFT.Repositories.Investments;
 using PFT.Utilities;
@@ -29,7 +29,9 @@ namespace PFT.Services.Investments
 
         public async Task<ServiceResult> AddInvestmentAsync(InvestmentRequest request)
         {
-            if(request.Quantity < 1)
+
+            TwelveDataQuote data = await RequestRealtimeStockData(request.Symbol);
+            if (data == null)
             {
                 throw new ArgumentException($"Provided quantity ({request.Quantity}) is less than the minimum (1)");
             }
@@ -40,14 +42,13 @@ namespace PFT.Services.Investments
             //    throw new ArgumentException($"Investment with symbol '{request.Symbol} already exists in the database.'");
             //}
 
-            TwelveDataQuote? data = await RequestStockData(request.Symbol);
-            
             if (data == null)
             {
                 throw new ArgumentException("Data received from API is null.");
             }
 
-            if(string.IsNullOrEmpty(data.Name)) {
+            if (string.IsNullOrEmpty(data.Name))
+            {
                 throw new ArgumentException($"Invalid data received from API.");
             }
 
@@ -58,15 +59,15 @@ namespace PFT.Services.Investments
                 Type = (InvestmentType)request.Type
             };
 
-            await _repository.AddInvestmentAsync(investmentData);
+            _repository.AddInvestmentAsync(investmentData);
             return new ServiceResult
             {
                 Success = true,
-                Message = "Investment added successfully"
+                Messages = { "Investment added successfully" }
             };
         }
 
-        public async Task<TwelveDataQuote?> RequestStockData(string symbol)
+        public async Task<TwelveDataQuote> RequestRealtimeStockData(string symbol)
         {
             try
             {
@@ -84,53 +85,57 @@ namespace PFT.Services.Investments
         /// This is the only method where the data retrieved from TwelveData's stock API is actually used. Any time the Refresh button is clicked or an investment is added, the full table is updated.
         /// </summary>
         /// <returns></returns>
-        public async Task<Dictionary<string, InvestmentWrapper>> RefreshData()
+        public async Task<Dictionary<string, InvestmentWrapper>> GetInvestments()
         {
-            Dictionary<string, Investment> rawInvestmentData = await _repository.GetAllInvestmentsAsync();
-            Dictionary<string, InvestmentWrapper> realtimeInvestmentData = new Dictionary<string, InvestmentWrapper>();
-            foreach (KeyValuePair<string, Investment> entry in rawInvestmentData)
-            {
-                if (entry.Value == null)
-                    continue;
+            Dictionary<string, Investment> investmentsCollection = _repository.GetAllInvestmentsAsync();
 
-                realtimeInvestmentData.Add(entry.Key, new InvestmentWrapper
+            Dictionary<string, InvestmentWrapper> completeData = new();
+            foreach (KeyValuePair<string, Investment> entry in investmentsCollection)
+            {
+                completeData.Add(entry.Key, new InvestmentWrapper
                 {
-                    StockData = await RequestStockData(entry.Key),
-                    CachedData = entry.Value
+                    CachedData = entry.Value,
+                    StockData = await RequestRealtimeStockData(entry.Value.Symbol)
                 });
             }
 
-            return realtimeInvestmentData;
+            return completeData;
         }
 
-        public async Task<ServiceResult> RemoveInvestmentAsync(string symbol)
+        public async Task<ServiceResult> DeleteInvestment(int id)
         {
-            if (string.IsNullOrEmpty(symbol))
+            try
+            {
+                _repository.RemoveInvestmentAsync(id);
+            }
+            catch (Exception e)
             {
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = "The provided symbol is not valid."
+                    Messages =
+                    {
+                        $"Failed to add investment: {e.Message}"
+                    }
                 };
             }
 
-            await _repository.RemoveInvestmentAsync(symbol);
             return new ServiceResult
             {
                 Success = true,
-                Message = "Investment removed successfully"
+                Messages = { "Investment removed successfully" }
             };
         }
 
         public async Task<ServiceResult> ChangeInvestmentAsync(Investment request)
         {
-            TwelveDataQuote data = await RequestStockData(request.Symbol);
-            if(data.ResponseStatus != Enums.TwelveDataClientResponseStatus.Ok)
+            TwelveDataQuote data = await RequestRealtimeStockData(request.Symbol);
+            if (data.ResponseStatus != Enums.TwelveDataClientResponseStatus.Ok)
             {
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = $"API request failed. Reason: {data.ResponseMessage}."
+                    Messages = { $"API request failed. Reason: {data.ResponseMessage}." }
                 };
             }
 
@@ -139,7 +144,7 @@ namespace PFT.Services.Investments
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
+                    Messages = { $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct." }
                 };
             }
 
@@ -148,7 +153,7 @@ namespace PFT.Services.Investments
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct."
+                    Messages = { $"Request received successfully, but failed to retrieve data. Check if the symbol '{request.Symbol}' is correct." }
                 };
             }
 
@@ -159,40 +164,25 @@ namespace PFT.Services.Investments
                 Type = request.Type
             };
 
-            await _repository.ChangeInvestmentAsync(investmentData);
+            _repository.ChangeInvestmentAsync(investmentData);
             return new ServiceResult
             {
                 Success = true,
-                Message = "Investment quantity changed successfully"
+                Messages = { "Investment quantity changed successfully" }
             };
         }
 
-        public async Task<InvestmentWrapper> GetInvestment(string symbol)
+        public async Task<InvestmentWrapper> GetInvestment(int id)
         {
-            Investment data = await _repository.GetInvestment(symbol);
-            InvestmentWrapper fullData = new InvestmentWrapper
+            Investment cachedData = _repository.GetInvestment(id);
+
+            TwelveDataQuote realtimeData = await RequestRealtimeStockData(cachedData.Symbol);
+
+            return new InvestmentWrapper
             {
-                CachedData = data,
-                StockData = await RequestStockData(symbol)
+                CachedData = cachedData,
+                StockData = realtimeData,
             };
-
-            return fullData;
-        }
-
-        public async Task<Dictionary<string, InvestmentWrapper>> GetAllInvestments()
-        {
-            Dictionary<string, Investment> investmentsCollection = await _repository.GetAllInvestmentsAsync();
-            Dictionary<string, InvestmentWrapper> fullData = new();
-            foreach (KeyValuePair<string, Investment> entry in investmentsCollection)
-            {
-                fullData.Add(entry.Key, new InvestmentWrapper
-                {
-                    CachedData = entry.Value,
-                    StockData = await RequestStockData(entry.Key),
-                });
-            }
-
-            return fullData;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Model;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
@@ -20,56 +18,32 @@ namespace PFT.Repositories.Investments
             _context = context;
         }
 
-        public async Task AddInvestmentAsync(Investment newInvestment)
+        public void ChangeInvestmentAsync(Investment requestedInvestment)
         {
-            _context.Investments.Add(newInvestment);
-            await _context.SaveChangesAsync();
+
         }
 
-        public async Task ChangeInvestmentAsync(Investment requestedInvestment)
+        public Investment GetInvestment(int id)
         {
-            var investment = await _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == requestedInvestment.Symbol);
-            if (investment == null)
-                throw new KeyNotFoundException($"Investment with symbol {requestedInvestment.Symbol} was not found in the database");
+            Investment data = _context.Investments.Where(investment => investment.Id == id).First();
 
-            investment.Quantity = requestedInvestment.Quantity;
-
-            await _context.SaveChangesAsync();
+            return data;
         }
 
-        public async Task RemoveInvestmentAsync(string symbolToDelete)
+        public Dictionary<string, Investment> GetAllInvestmentsAsync()
         {
-            var investment = await _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == symbolToDelete);
-            if (investment == null)
-                throw new KeyNotFoundException($"Investment with symbol {symbolToDelete} was not found in the database");
+            return _context.Investments.ToDictionary(investment => investment.Symbol);
+         }
 
+        public void RemoveInvestmentAsync(int id)
+        {
+            Investment investment = _context.Investments.Where(current => current.Id == id).First();
             _context.Investments.Remove(investment);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> CheckIfInvestmentExists(string symbol)
+        public void AddInvestmentAsync(Investment investment)
         {
-            return await _context.Investments.AnyAsync(i => i.Symbol == symbol);
-        }
-
-        public Task<Investment> GetInvestment(string symbol)
-        {
-            var investment = _context.Investments.FirstOrDefaultAsync(inv => inv.Symbol == symbol);
-            if (investment == null)
-                throw new KeyNotFoundException($"Investment with symbol {symbol} was not found in the database");
-
-            return investment;
-        }
-
-        public Task<Dictionary<string, Investment>> GetAllInvestmentsAsync()
-        {
-            if (_context.Investments == null)
-                throw new NullReferenceException("Investments collection is null.");
-
-            if (!_context.Investments.Any())
-                throw new ArgumentException("Collection does not contain any investments.");
-
-            return _context.Investments.ToDictionaryAsync(investment => investment.Symbol);
+            _context.Investments.Add(investment);
         }
     }
 }
